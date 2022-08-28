@@ -1,4 +1,5 @@
 mod tuple;
+mod color;
 
 use crate::tuple::Tuple;
 
