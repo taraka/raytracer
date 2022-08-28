@@ -10,31 +10,31 @@ pub struct Tuple {
 }
 
 impl Tuple {
-    fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Self { x, y, z, w }
     }
 
-    fn point(x: f32, y: f32, z: f32) -> Self {
+    pub fn point(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z, w: 1.0 }
     }
 
-    fn vector(x: f32, y: f32, z: f32) -> Self {
+    pub fn vector(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z, w: 0.0 }
     }
 
-    fn is_point(&self) -> bool {
+    pub fn is_point(&self) -> bool {
         self.w == 1.0
     }
 
-    fn is_vector(&self) -> bool {
+    pub fn is_vector(&self) -> bool {
         self.w == 0.0
     }
 
-    fn magnitude(&self) -> f32 {
+    pub fn magnitude(&self) -> f32 {
         (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0) + self.w.powf(2.0)).sqrt()
     }
 
-    fn normalize(self) -> Self {
+    pub fn normalize(self) -> Self {
         let mag = self.magnitude();
 
         Self::new(
@@ -45,14 +45,14 @@ impl Tuple {
         )
     }
 
-    fn dot(self, rhs: &Tuple) -> f32 {
+    pub fn dot(self, rhs: &Tuple) -> f32 {
         self.x * rhs.x +
         self.y * rhs.y +
         self.z * rhs.z +
         self.w * rhs.w
     }
 
-    fn cross(self, rhs: &Tuple) -> Tuple {
+    pub fn cross(self, rhs: &Tuple) -> Tuple {
         Self::vector(
             self.y * rhs.z - self.z * rhs.y,
             self.z * rhs.x - self.x * rhs.z,
