@@ -1,22 +1,23 @@
 use std::ops::Index;
+use std::fmt::Debug;
 
 
-type Matrix2 = Matrix<f32, 2, [f32; 4]>;
-type Matrix3 = Matrix<f32, 3, [f32; 9]>;
-type Matrix4 = Matrix<f32, 4, [f32; 16]>;
+type Matrix2 = Matrix<2, [f32; 4]>;
+type Matrix3 = Matrix<3, [f32; 9]>;
+type Matrix4 = Matrix<4, [f32; 16]>;
 
-pub struct Matrix<T: Copy, const S: usize, D: Index<usize, Output = T>> {
+pub struct Matrix<const S: usize, D: Index<usize, Output = f32>> {
     data: D,
 }
 
-impl<T: Copy, const S: usize, D: Index<usize> + Index<usize, Output = T>> Matrix<T, { S }, D> {
+impl<const S: usize, D: Index<usize, Output = f32> + Debug + Copy + Clone + PartialEq + PartialOrd> Matrix<{ S }, D> {
     pub fn new(data: D) -> Self {
         Self {
             data,
         }
     }
 
-    pub fn get(&self, r: usize, c: usize) -> T {
+    pub fn get(&self, r: usize, c: usize) -> f32 {
         self.data[r * S + c]
     }
 }
