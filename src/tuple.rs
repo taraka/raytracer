@@ -44,6 +44,26 @@ impl Tuple {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z + self.w * rhs.w
     }
 
+    pub fn get(&self, i: usize) -> f32 {
+        match i {
+            0 => self.x,
+            1 => self.y,
+            2 => self.z,
+            3 => self.w,
+            _ => panic!("Can't fetch that value from a tuple"),
+        }
+    }
+
+    pub fn set(&mut self, i: usize, v: f32) {
+        match i {
+            0 => self.x = v,
+            1 => self.y = v,
+            2 => self.z = v,
+            3 => self.w = v,
+            _ => panic!("Can't fetch that value from a tuple"),
+        }
+    }
+
     pub fn cross(self, rhs: &Tuple) -> Tuple {
         Self::vector(
             self.y * rhs.z - self.z * rhs.y,

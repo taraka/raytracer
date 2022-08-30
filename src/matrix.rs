@@ -1,11 +1,13 @@
 use std::fmt::Debug;
 use std::ops;
 
+use crate::Tuple;
+
 type Matrix2 = Matrix<2, [f32; 4]>;
 type Matrix3 = Matrix<3, [f32; 9]>;
 type Matrix4 = Matrix<4, [f32; 16]>;
  
-pub trait DataStorage : ops::Index<usize, Output = f32> + ops::IndexMut<usize> + Copy + Clone {}
+pub trait DataStorage : ops::Index<usize, Output = f32> + ops::IndexMut<usize> + Copy + Clone + Debug {}
 impl DataStorage for [f32; 4] {}
 impl DataStorage for [f32; 9] {}
 impl DataStorage for [f32; 16] {}
@@ -59,11 +61,26 @@ impl<const S: usize, D: DataStorage>
     }
 }
 
+impl<const S: usize, D: DataStorage>
+    ops::Mul<Tuple> for Matrix<S, D>
+{
+    type Output = Tuple;
+
+    fn mul(self, rhs: Tuple) -> Tuple {
+        let mut out = rhs.clone();
+            for r in 0..S {
+                out.set(r, (0..S).map(|i| self.get(r, i) * rhs.get(i)).sum());
+            }
+        out
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::matrix::Matrix2;
     use crate::matrix::Matrix3;
     use crate::matrix::Matrix4;
+    use crate::Tuple;
 
     #[test]
     fn basic_4x4() {
@@ -141,6 +158,20 @@ mod tests {
                 26.0, 46.0, 42.0
             ]),
             m1 * m2
+        );
+    }
+
+    #[test]
+    fn matrix_multiply_with_tuple() {
+        let m = Matrix4::new([
+            1.0, 2.0, 3.0, 4.0, 2.0, 4.0, 4.0, 2.0, 8.0, 6.0, 4.0, 1.0, 0.0, 0.0, 0.0, 1.0,
+        ]);
+
+        let t = Tuple::new(1.0, 2.0, 3.0, 1.0);
+
+        assert_eq!(
+            Tuple::new(18.0, 24.0, 33.0, 1.0),
+            m * t
         );
     }
 }
