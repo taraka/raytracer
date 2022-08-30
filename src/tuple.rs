@@ -1,5 +1,5 @@
-use std::ops;
 use std::cmp::PartialEq;
+use std::ops;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Tuple {
@@ -37,19 +37,11 @@ impl Tuple {
     pub fn normalize(self) -> Self {
         let mag = self.magnitude();
 
-        Self::new(
-            self.x / mag,
-            self.y / mag,
-            self.z / mag,
-            self.w / mag,
-        )
+        Self::new(self.x / mag, self.y / mag, self.z / mag, self.w / mag)
     }
 
     pub fn dot(self, rhs: &Tuple) -> f32 {
-        self.x * rhs.x +
-        self.y * rhs.y +
-        self.z * rhs.z +
-        self.w * rhs.w
+        self.x * rhs.x + self.y * rhs.y + self.z * rhs.z + self.w * rhs.w
     }
 
     pub fn cross(self, rhs: &Tuple) -> Tuple {
@@ -63,10 +55,10 @@ impl Tuple {
 
 impl PartialEq<Tuple> for Tuple {
     fn eq(&self, rhs: &Tuple) -> bool {
-        (self.x - rhs.x).abs() < f32::EPSILON &&
-        (self.y - rhs.y).abs() < f32::EPSILON &&
-        (self.z - rhs.z).abs() < f32::EPSILON &&
-        (self.w - rhs.w).abs() < f32::EPSILON
+        (self.x - rhs.x).abs() < f32::EPSILON
+            && (self.y - rhs.y).abs() < f32::EPSILON
+            && (self.z - rhs.z).abs() < f32::EPSILON
+            && (self.w - rhs.w).abs() < f32::EPSILON
     }
 }
 
@@ -100,12 +92,7 @@ impl ops::Mul<f32> for Tuple {
     type Output = Tuple;
 
     fn mul(self, rhs: f32) -> Self {
-        Self::new(
-            self.x * rhs,
-            self.y * rhs,
-            self.z * rhs,
-            self.w * rhs,
-        )
+        Self::new(self.x * rhs, self.y * rhs, self.z * rhs, self.w * rhs)
     }
 }
 
@@ -113,12 +100,7 @@ impl ops::Div<f32> for Tuple {
     type Output = Tuple;
 
     fn div(self, rhs: f32) -> Self {
-        Self::new(
-            self.x / rhs,
-            self.y / rhs,
-            self.z / rhs,
-            self.w / rhs,
-        )
+        Self::new(self.x / rhs, self.y / rhs, self.z / rhs, self.w / rhs)
     }
 }
 
@@ -126,12 +108,7 @@ impl ops::Not for Tuple {
     type Output = Tuple;
 
     fn not(self) -> Self {
-        Self::new(
-            -self.x,
-            -self.y,
-            -self.z,
-            -self.w,
-        )
+        Self::new(-self.x, -self.y, -self.z, -self.w)
     }
 }
 
@@ -255,30 +232,15 @@ mod tests {
 
     #[test]
     fn magnitude_of_vector() {
-        assert_eq!(
-            Tuple::vector(1.0, 0.0, 0.0).magnitude(),
-            1.0
-        );
+        assert_eq!(Tuple::vector(1.0, 0.0, 0.0).magnitude(), 1.0);
 
-        assert_eq!(
-            Tuple::vector(0.0, 1.0, 0.0).magnitude(),
-            1.0
-        );
+        assert_eq!(Tuple::vector(0.0, 1.0, 0.0).magnitude(), 1.0);
 
-        assert_eq!(
-            Tuple::vector(0.0, 0.0, 1.0).magnitude(),
-            1.0
-        );
+        assert_eq!(Tuple::vector(0.0, 0.0, 1.0).magnitude(), 1.0);
 
-        assert_eq!(
-            Tuple::vector(1.0, 2.0, 3.0).magnitude(),
-            14.0_f32.sqrt()
-        );
+        assert_eq!(Tuple::vector(1.0, 2.0, 3.0).magnitude(), 14.0_f32.sqrt());
 
-        assert_eq!(
-            Tuple::vector(-1.0, -2.0, -3.0).magnitude(),
-            14.0_f32.sqrt()
-        );
+        assert_eq!(Tuple::vector(-1.0, -2.0, -3.0).magnitude(), 14.0_f32.sqrt());
     }
 
     #[test]
@@ -296,10 +258,7 @@ mod tests {
 
     #[test]
     fn magnitude_of_normal_vector() {
-        assert!(
-            (Tuple::vector(1.0, 2.0, 3.0).normalize().magnitude() - 
-            1.0).abs() < f32::EPSILON
-        );
+        assert!((Tuple::vector(1.0, 2.0, 3.0).normalize().magnitude() - 1.0).abs() < f32::EPSILON);
     }
 
     #[test]
@@ -315,14 +274,8 @@ mod tests {
         let a = Tuple::vector(1.0, 2.0, 3.0);
         let b = Tuple::vector(2.0, 3.0, 4.0);
 
-        assert_eq!(
-            a.cross(&b),
-            Tuple::vector(-1.0, 2.0, -1.0)
-        );
+        assert_eq!(a.cross(&b), Tuple::vector(-1.0, 2.0, -1.0));
 
-        assert_eq!(
-            b.cross(&a),
-            Tuple::vector(1.0, -2.0, 1.0)
-        );
+        assert_eq!(b.cross(&a), Tuple::vector(1.0, -2.0, 1.0));
     }
 }

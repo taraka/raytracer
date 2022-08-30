@@ -1,8 +1,4 @@
-mod canvas;
-mod color;
-mod tuple;
-
-use crate::tuple::Tuple;
+use raytracer::tuple::Tuple;
 
 struct Env {
     wind: Tuple,

@@ -8,12 +8,24 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn new(red: f32, green: f32 , blue: f32) -> Self {
-        Self {
-            red,
-            green,
-            blue,
-        }
+    pub fn new(red: f32, green: f32, blue: f32) -> Self {
+        Self { red, green, blue }
+    }
+
+    pub fn black() -> Self {
+        Self::new(0.0, 0.0, 0.0)
+    }
+
+    pub fn white() -> Self {
+        Self::new(1.0, 1.0, 1.0)
+    }
+
+    pub fn is_black(&self) -> bool {
+        self.red == 0.0 && self.green == 0.0 && self.blue == 0.0
+    }
+
+    pub fn is_white(&self) -> bool {
+        self.red == 1.0 && self.green == 1.0 && self.blue == 1.0
     }
 }
 
@@ -21,9 +33,9 @@ impl Color {
 impl PartialEq<Color> for Color {
     fn eq(&self, rhs: &Color) -> bool {
         println!("{}, {}", (self.green - rhs.green).abs(), f32::EPSILON);
-        (self.red - rhs.red).abs() < f32::EPSILON * 10.0 &&
-        (self.green - rhs.green).abs() < f32::EPSILON * 10.0 &&
-        (self.blue - rhs.blue).abs() < f32::EPSILON * 10.0
+        (self.red - rhs.red).abs() < f32::EPSILON * 10.0
+            && (self.green - rhs.green).abs() < f32::EPSILON * 10.0
+            && (self.blue - rhs.blue).abs() < f32::EPSILON * 10.0
     }
 }
 
@@ -67,11 +79,7 @@ impl ops::Mul<f32> for Color {
     type Output = Color;
 
     fn mul(self, rhs: f32) -> Self {
-        Self::new(
-            self.red * rhs,
-            self.green * rhs,
-            self.blue * rhs,
-        )
+        Self::new(self.red * rhs, self.green * rhs, self.blue * rhs)
     }
 }
 
@@ -115,5 +123,19 @@ mod tests {
         let c2 = Color::new(0.9, 1.0, 0.1);
 
         assert_eq!(c1 * c2, Color::new(0.9, 0.2, 0.04));
+    }
+
+    #[test]
+    fn black_is_black() {
+        let c = Color::black();
+        assert!(c.is_black());
+        assert_eq!(c, Color::new(0.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn white_is_white() {
+        let c = Color::white();
+        assert!(c.is_white());
+        assert_eq!(c, Color::new(1.0, 1.0, 1.0));
     }
 }
