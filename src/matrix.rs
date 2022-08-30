@@ -4,16 +4,21 @@ use std::ops;
 type Matrix2 = Matrix<2, [f32; 4]>;
 type Matrix3 = Matrix<3, [f32; 9]>;
 type Matrix4 = Matrix<4, [f32; 16]>;
+ 
+pub trait DataStorage : ops::Index<usize, Output = f32> + ops::IndexMut<usize> + Copy + Clone {}
+impl DataStorage for [f32; 4] {}
+impl DataStorage for [f32; 9] {}
+impl DataStorage for [f32; 16] {}
 
 #[derive(Debug, Clone, Copy)]
-pub struct Matrix<const S: usize, D: ops::Index<usize, Output = f32>>
+pub struct Matrix<const S: usize, D: DataStorage>
 where
     D: Clone,
 {
     data: D,
 }
 
-impl<const S: usize, D: ops::Index<usize, Output = f32> + ops::IndexMut<usize> + Copy + Clone>
+impl<const S: usize, D: DataStorage>
     Matrix<{ S }, D>
 {
     pub fn new(data: D) -> Self {
@@ -30,7 +35,7 @@ impl<const S: usize, D: ops::Index<usize, Output = f32> + ops::IndexMut<usize> +
     }
 }
 
-impl<const S: usize, D: ops::Index<usize, Output = f32> + Clone + Copy + ops::IndexMut<usize>>
+impl<const S: usize, D: DataStorage>
     PartialEq<Matrix<S, D>> for Matrix<S, D>
 {
     fn eq(&self, rhs: &Matrix<S, D>) -> bool {
@@ -38,7 +43,7 @@ impl<const S: usize, D: ops::Index<usize, Output = f32> + Clone + Copy + ops::In
     }
 }
 
-impl<const S: usize, D: ops::Index<usize, Output = f32> + Clone + Copy + ops::IndexMut<usize>>
+impl<const S: usize, D: DataStorage>
     ops::Mul<Matrix<S, D>> for Matrix<S, D>
 {
     type Output = Matrix<S, D>;
