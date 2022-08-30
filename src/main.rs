@@ -10,7 +10,6 @@ use crate::tuple::Tuple;
 use std::fs::File;
 use std::io::Write;
 
-
 struct Env {
     wind: Tuple,
     gravity: Tuple,
@@ -36,8 +35,16 @@ fn main() -> std::io::Result<()> {
 
     loop {
         proj.tick(&env);
-        println!("{}, {}", proj.position.x as usize, (900_f32 - proj.position.y) as usize);
-        canvas.write_pixel(proj.position.x as usize, (900_f32 - proj.position.y) as usize, Color::new(1.0, 0.0, 0.0));
+        println!(
+            "{}, {}",
+            proj.position.x as usize,
+            (900_f32 - proj.position.y) as usize
+        );
+        canvas.write_pixel(
+            proj.position.x as usize,
+            (900_f32 - proj.position.y) as usize,
+            Color::new(1.0, 0.0, 0.0),
+        );
 
         if proj.position.y <= 0.0 {
             break;

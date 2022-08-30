@@ -1,17 +1,19 @@
-use std::ops::Index;
 use std::fmt::Debug;
-
+use std::ops;
 
 type Matrix2 = Matrix<2, [f32; 4]>;
 type Matrix3 = Matrix<3, [f32; 9]>;
 type Matrix4 = Matrix<4, [f32; 16]>;
 
-#[derive(PartialEq, Debug)]
-pub struct Matrix<const S: usize, D: Index<usize, Output = f32>> {
+#[derive(Debug)]
+pub struct Matrix<const S: usize, D: ops::Index<usize, Output = f32>> {
     data: D,
 }
 
-impl<const S: usize, D: Index<usize, Output = f32> + Debug + Copy + Clone + PartialEq + PartialOrd> Matrix<{ S }, D> {
+impl<
+    const S: usize,
+    D: ops::Index<usize, Output = f32> + Debug + Copy + Clone + PartialOrd
+> Matrix<{ S }, D> {
     pub fn new(data: D) -> Self {
         Self {
             data,
@@ -20,6 +22,15 @@ impl<const S: usize, D: Index<usize, Output = f32> + Debug + Copy + Clone + Part
 
     pub fn get(&self, r: usize, c: usize) -> f32 {
         self.data[r * S + c]
+    }
+}
+
+impl<
+    const S: usize,
+    D: ops::Index<usize, Output = f32>
+> PartialEq<Matrix<S, D>> for Matrix<S, D> {
+    fn eq(&self, rhs: &Matrix<S, D>) -> bool {
+        (0..S*S).all(|i| (self.data[i] - rhs.data[i]).abs() < f32::EPSILON)
     }
 }
 
