@@ -6,6 +6,7 @@ type Matrix2 = Matrix<2, [f32; 4]>;
 type Matrix3 = Matrix<3, [f32; 9]>;
 type Matrix4 = Matrix<4, [f32; 16]>;
 
+#[derive(PartialEq, Debug)]
 pub struct Matrix<const S: usize, D: Index<usize, Output = f32>> {
     data: D,
 }
@@ -64,5 +65,36 @@ mod tests {
         assert_eq!(5.0, m.get(0,1));
         assert_eq!(1.0, m.get(1,0));
         assert_eq!(-2.0, m.get(1,1));
+    }
+
+    #[test]
+    fn matrix_equality() {
+        let m1 = Matrix4::new([1.0, 2.0, 3.0, 4.0,
+                     5.0, 6.0, 7.0, 8.0,
+                     9.0, 8.0, 7.0, 6.0,
+                     5.0, 4.0, 3.0, 2.0]);
+
+        let m2 = Matrix4::new([1.0, 2.0, 3.0, 4.0,
+                                5.0, 6.0, 7.0, 8.0,
+                                9.0, 8.0, 7.0, 6.0,
+                                5.0, 4.0, 3.0, 2.0]);
+
+        assert_eq!(m1, m2);
+        
+    }
+
+    #[test]
+    fn matrix_equality_ne() {
+        let m1 = Matrix4::new([1.0, 2.0, 3.0, 4.0,
+                                5.0, 6.0, 7.0, 8.0,
+                                9.0, 8.0, 7.0, 6.0,
+                                5.0, 4.0, 3.0, 2.0]);
+
+        let m2 = Matrix4::new([2.0, 3.0, 4.0, 5.0,
+                               6.0, 7.0, 8.0, 9.0,
+                               8.0, 7.0, 6.0, 5.0,
+                               4.0, 3.0, 2.0, 1.0]);
+
+        assert!(m1 != m2);
     }
 }
