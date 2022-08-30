@@ -1,5 +1,6 @@
 mod canvas;
 mod color;
+mod matrix;
 mod tuple;
 
 use crate::canvas::Canvas;
@@ -32,7 +33,6 @@ fn main() -> std::io::Result<()> {
     };
 
     let mut canvas = Canvas::new(900, 550);
-    //canvas.fill(Color::new(0.0, 1.0, 0.0));
 
     loop {
         proj.tick(&env);
