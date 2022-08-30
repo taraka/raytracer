@@ -59,7 +59,7 @@ impl Canvas {
         data
     }
 
-    fn fill(&mut self, c: Color) {
+    pub fn fill(&mut self, c: Color) {
         for p in self.pixels.iter_mut() {
             *p = c;
         }
