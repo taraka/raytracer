@@ -35,11 +35,7 @@ fn main() -> std::io::Result<()> {
 
     loop {
         proj.tick(&env);
-        println!(
-            "{}, {}",
-            proj.position.x as usize,
-            (900_f32 - proj.position.y) as usize
-        );
+
         canvas.write_pixel(
             proj.position.x as usize,
             (900_f32 - proj.position.y) as usize,
