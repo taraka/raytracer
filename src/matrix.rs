@@ -73,6 +73,20 @@ impl Matrix4 {
         }
         out
     }
+
+    fn minor(&self, r: usize, c: usize) -> f32 {
+        self.submatrix(r, c).determinant()
+    }
+
+    fn cofactor(&self, r: usize, c: usize) -> f32 {
+        let minor = self.minor(r, c);
+
+        return if (r + c) % 2 == 0 { minor } else { -minor };
+    }
+
+    fn determinant(&self) -> f32 {
+        (0..4).map(|c| self.get(0, c) * self.cofactor(0, c)).sum()
+    }
 }
 
 impl Matrix3 {
@@ -98,6 +112,16 @@ impl Matrix3 {
 
     fn minor(&self, r: usize, c: usize) -> f32 {
         self.submatrix(r, c).determinant()
+    }
+
+    fn cofactor(&self, r: usize, c: usize) -> f32 {
+        let minor = self.minor(r, c);
+
+        return if (r + c) % 2 == 0 { minor } else { -minor };
+    }
+
+    fn determinant(&self) -> f32 {
+        (0..3).map(|c| self.get(0, c) * self.cofactor(0, c)).sum()
     }
 }
 
@@ -290,18 +314,48 @@ mod tests {
     #[test]
     fn submatrix3() {
         let m = Matrix3::new([1.0, 5.0, 0.0, -3.0, 2.0, 7.0, 0.0, 6.0, -3.0]);
-
         assert_eq!(Matrix2::new([-3.0, 2.0, 0.0, 6.0]), m.submatrix(0, 2));
     }
 
     #[test]
     fn minor_matrix3() {
         let a = Matrix3::new([3.0, 5.0, 0.0, 2.0, -1.0, -7.0, 6.0, -1.0, 5.0]);
-
         let b = a.submatrix(1, 0);
 
         assert_eq!(25.0, b.determinant());
-
         assert_eq!(25.0, a.minor(1, 0));
+    }
+
+    #[test]
+    fn matrix3_cofactor() {
+        let a = Matrix3::new([3.0, 5.0, 0.0, 2.0, -1.0, -7.0, 6.0, -1.0, 5.0]);
+
+        assert_eq!(-12.0, a.minor(0, 0));
+        assert_eq!(-12.0, a.cofactor(0, 0));
+        assert_eq!(25.0, a.minor(1, 0));
+        assert_eq!(-25.0, a.cofactor(1, 0));
+    }
+
+    #[test]
+    fn matrix3_determinent() {
+        let a = Matrix3::new([1.0, 2.0, 6.0, -5.0, 8.0, -4.0, 2.0, 6.0, 4.0]);
+
+        assert_eq!(56.0, a.cofactor(0, 0));
+        assert_eq!(12.0, a.cofactor(0, 1));
+        assert_eq!(-46.0, a.cofactor(0, 2));
+        assert_eq!(-196.0, a.determinant());
+    }
+
+    #[test]
+    fn matrix4_determinent() {
+        let a = Matrix4::new([
+            -2.0, -8.0, 3.0, 5.0, -3.0, 1.0, 7.0, 3.0, 1.0, 2.0, -9.0, 6.0, -6.0, 7.0, 7.0, -9.0,
+        ]);
+
+        assert_eq!(690.0, a.cofactor(0, 0));
+        assert_eq!(447.0, a.cofactor(0, 1));
+        assert_eq!(210.0, a.cofactor(0, 2));
+        assert_eq!(51.0, a.cofactor(0, 3));
+        assert_eq!(-4071.0, a.determinant());
     }
 }
