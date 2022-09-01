@@ -99,6 +99,27 @@ impl Matrix4 {
     fn determinant(&self) -> f32 {
         (0..4).map(|c| self.get(0, c) * self.cofactor(0, c)).sum()
     }
+
+    fn is_invertable(&self) -> bool {
+        self.determinant() != 0.0
+    }
+
+    fn inverse(&self) -> Matrix4 {
+        if !self.is_invertable() {
+            panic!("Matrix is not invertable");
+        }
+
+        let d = self.determinant();
+        let mut out = Matrix4::identity();
+
+        for r in 0..4 {
+            for c in 0..4 {
+                out.set(c, r, self.cofactor(r, c) / d);
+            }
+        }
+
+        out
+    }
 }
 
 impl Matrix3 {
@@ -410,5 +431,58 @@ mod tests {
         assert_eq!(210.0, a.cofactor(0, 2));
         assert_eq!(51.0, a.cofactor(0, 3));
         assert_eq!(-4071.0, a.determinant());
+    }
+
+    #[test]
+    fn invertable_matrix() {
+        let a = Matrix4::new([
+            [6.0, 4.0, 4.0, 4.0],
+            [5.0, 5.0, 7.0, 6.0],
+            [4.0, -9.0, 3.0, -7.0],
+            [9.0, 1.0, 7.0, -6.0],
+        ]);
+
+        assert_eq!(-2120.0, a.determinant());
+        assert!(a.is_invertable());
+    }
+
+    #[test]
+    fn non_invertable_matrix() {
+        let a = Matrix4::new([
+            [4.0, 2.0, -2.0, -3.0],
+            [9.0, 6.0, 2.0, 6.0],
+            [0.0, -5.0, 1.0, -5.0],
+            [0.0, 0.0, 0.0, 0.0],
+        ]);
+
+        assert_eq!(0.0, a.determinant());
+        assert!(!a.is_invertable());
+    }
+
+    #[test]
+    fn matrix_inverse() {
+        let a = Matrix4::new([
+            [-5.0, 2.0, 6.0, -8.0],
+            [1.0, -5.0, 1.0, 8.0],
+            [7.0, 7.0, -6.0, -7.0],
+            [1.0, -3.0, 7.0, 4.0],
+        ]);
+
+        let b = a.inverse();
+
+        assert_eq!(532.0, a.determinant());
+        assert_eq!(-160.0, a.cofactor(2, 3));
+        assert_eq!(-160.0 / 532.0, b.get(3, 2));
+        assert_eq!(105.0, a.cofactor(3, 2));
+        assert_eq!(105.0 / 532.0, b.get(2, 3));
+        assert_eq!(
+            Matrix4::new([
+                [0.21805, 0.45112783, 0.24060151, -0.04511278],
+                [-0.8082707, -1.456767, -0.44360903, 0.5206767],
+                [-0.078947365, -0.2236842, -0.05263158, 0.19736843],
+                [-0.52255636, -0.81390977, -0.30075186, 0.30639097]
+            ]),
+            b
+        );
     }
 }
