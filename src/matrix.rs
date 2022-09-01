@@ -70,6 +70,59 @@ impl Matrix4 {
         ])
     }
 
+    fn translation(x: f32, y: f32, z: f32) -> Self {
+        let mut out = Self::identity();
+
+        out.set(0, 3, x);
+        out.set(1, 3, y);
+        out.set(2, 3, z);
+
+        out
+    }
+
+    fn scaling(x: f32, y: f32, z: f32) -> Self {
+        let mut out = Self::identity();
+
+        out.set(0, 0, x);
+        out.set(1, 1, y);
+        out.set(2, 2, z);
+
+        out
+    }
+
+    fn rotation_x(r: f32) -> Self {
+        let mut out = Self::identity();
+
+        out.set(1, 1, r.cos());
+        out.set(1, 2, -r.sin());
+        out.set(2, 1, r.sin());
+        out.set(2, 2, r.cos());
+
+        out
+    }
+
+    fn rotation_y(r: f32) -> Self {
+        let mut out = Self::identity();
+
+        out.set(0, 0, r.cos());
+        out.set(0, 2, r.sin());
+        out.set(2, 0, -r.sin());
+        out.set(2, 2, r.cos());
+
+        out
+    }
+
+    fn rotation_z(r: f32) -> Self {
+        let mut out = Self::identity();
+
+        out.set(0, 0, r.cos());
+        out.set(0, 1, -r.sin());
+        out.set(1, 0, r.sin());
+        out.set(1, 1, r.cos());
+
+        out
+    }
+
     fn submatrix(&self, skip_r: usize, skip_c: usize) -> Matrix3 {
         let mut out = Matrix3::identity();
         for r in 0..4 {
@@ -202,6 +255,8 @@ impl<const S: usize> ops::Mul<Tuple> for Matrix<S> {
 
 #[cfg(test)]
 mod tests {
+    use std::f32::consts::PI;
+
     use crate::matrix::Matrix2;
     use crate::matrix::Matrix3;
     use crate::matrix::Matrix4;
@@ -505,5 +560,84 @@ mod tests {
         let c = a * b;
 
         assert_eq!(a, c * b.inverse());
+    }
+
+    #[test]
+    fn multiply_by_translation() {
+        let t = Matrix4::translation(5.0, -3.0, 2.0);
+        let p = Tuple::point(-3.0, 4.0, 5.0);
+        assert_eq!(Tuple::point(2.0, 1.0, 7.0), t * p);
+    }
+
+    #[test]
+    fn multiply_by_translation_inverse() {
+        let t = Matrix4::translation(5.0, -3.0, 2.0);
+        let p = Tuple::point(-3.0, 4.0, 5.0);
+        assert_eq!(Tuple::point(-8.0, 7.0, 3.0), t.inverse() * p);
+    }
+
+    #[test]
+    fn translation_does_not_effect_vectors() {
+        let t = Matrix4::translation(5.0, -3.0, 2.0);
+        let v = Tuple::vector(-3.0, 4.0, 5.0);
+        assert_eq!(v, t * v);
+    }
+
+    #[test]
+    fn scaling_point() {
+        let s = Matrix4::scaling(2.0, 3.0, 4.0);
+        let p = Tuple::point(-4.0, 6.0, 8.0);
+        assert_eq!(Tuple::point(-8.0, 18.0, 32.0), s * p);
+    }
+
+    #[test]
+    fn scaling_vector() {
+        let s = Matrix4::scaling(2.0, 3.0, 4.0);
+        let v = Tuple::vector(-4.0, 6.0, 8.0);
+        assert_eq!(Tuple::vector(-8.0, 18.0, 32.0), s * v);
+    }
+
+    #[test]
+    fn scaling_vector_inverse() {
+        let s = Matrix4::scaling(2.0, 3.0, 4.0);
+        let v = Tuple::vector(-4.0, 6.0, 8.0);
+        assert_eq!(Tuple::vector(-2.0, 2.0, 2.0), s.inverse() * v);
+    }
+
+    #[test]
+    fn reflecting_point() {
+        let s = Matrix4::scaling(-1.0, 1.0, 1.0);
+        let p = Tuple::point(1.0, 2.0, 3.0);
+        assert_eq!(Tuple::point(-1.0, 2.0, 3.0), s.inverse() * p);
+    }
+
+    #[test]
+    fn rotate_x_point() {
+        let p = Tuple::point(0.0, 1.0, 0.0);
+        let r1 = Matrix4::rotation_x(PI / 4.0);
+        let r2 = Matrix4::rotation_x(PI / 2.0);
+        
+        assert_eq!(Tuple::point(0.0, 0.7071068, 0.7071068), r1 * p);
+        assert_eq!(Tuple::point(0.0, 0.0, 1.0), r2 * p);
+    }
+
+    #[test]
+    fn rotate_y_point() {
+        let p = Tuple::point(0.0, 0.0, 1.0);
+        let r1 = Matrix4::rotation_y(PI / 4.0);
+        let r2 = Matrix4::rotation_y(PI / 2.0);
+        
+        assert_eq!(Tuple::point(0.7071068, 0.0, 0.7071068), r1 * p);
+        assert_eq!(Tuple::point(1.0, 0.0, 0.0), r2 * p);
+    }
+
+    #[test]
+    fn rotate_z_point() {
+        let p = Tuple::point(0.0, 1.0, 0.0);
+        let r1 = Matrix4::rotation_z(PI / 4.0);
+        let r2 = Matrix4::rotation_z(PI / 2.0);
+        
+        assert_eq!(Tuple::point(-0.7071068, 0.7071068, 0.0), r1 * p);
+        assert_eq!(Tuple::point(-1.0, 0.0, 0.0), r2 * p);
     }
 }
