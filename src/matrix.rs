@@ -170,7 +170,7 @@ impl Matrix2 {
 
 impl<const S: usize> PartialEq<Matrix<S>> for Matrix<S> {
     fn eq(&self, rhs: &Matrix<S>) -> bool {
-        (0..S).all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < f32::EPSILON))
+        (0..S).all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < 10.0 * f32::EPSILON))
     }
 }
 
@@ -484,5 +484,26 @@ mod tests {
             ]),
             b
         );
+    }
+
+    #[test]
+    fn multiple_matrix_by_its_inverse() {
+        let a = Matrix4::new([
+            [3.0, -9.0, 7.0, 3.0],
+            [3.0, -8.0, 2.0, -9.0],
+            [-4.0, 4.0, 4.0, 1.0],
+            [-6.0, 5.0, -1.0, 1.0]
+        ]);
+
+        let b = Matrix4::new([
+            [5.0, -9.0, 7.0, 3.0],
+            [4.0, -8.0, 2.0, -9.0],
+            [-4.0, -4.0, 4.0, 1.0],
+            [-9.0, 5.0, -33.0, 1.0]
+        ]);
+
+        let c = a * b;
+
+        assert_eq!(a, c * b.inverse());
     }
 }
