@@ -123,6 +123,19 @@ impl Matrix4 {
         out
     }
 
+    fn shearing(xy: f32, xz: f32, yx: f32, yz: f32, zx: f32, zy: f32, ) -> Self {
+        let mut out = Self::identity();
+
+        out.set(0, 1, xy);
+        out.set(0, 2, xz);
+        out.set(1, 0, yx);
+        out.set(1, 2, yz);
+        out.set(2, 0, zx);
+        out.set(2, 1, zy);
+
+        out
+    }
+
     fn submatrix(&self, skip_r: usize, skip_c: usize) -> Matrix3 {
         let mut out = Matrix3::identity();
         for r in 0..4 {
@@ -639,5 +652,70 @@ mod tests {
         
         assert_eq!(Tuple::point(-0.7071068, 0.7071068, 0.0), r1 * p);
         assert_eq!(Tuple::point(-1.0, 0.0, 0.0), r2 * p);
+    }
+
+    #[test]
+    fn shearing_xy() {
+        let p = Tuple::point(2.0, 3.0, 4.0);
+        let s = Matrix4::shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        assert_eq!(Tuple::point(5.0, 3.0, 4.0), s * p);
+    }
+    #[test]
+    fn shearing_xz() {
+        let p = Tuple::point(2.0, 3.0, 4.0);
+        let s = Matrix4::shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+        assert_eq!(Tuple::point(6.0, 3.0, 4.0), s * p);
+    }
+    #[test]
+    fn shearing_yx() {
+        let p = Tuple::point(2.0, 3.0, 4.0);
+        let s = Matrix4::shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+        assert_eq!(Tuple::point(2.0, 5.0, 4.0), s * p);
+    }
+    
+    #[test]
+    fn shearing_yz() {
+        let p = Tuple::point(2.0, 3.0, 4.0);
+        let s = Matrix4::shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+        assert_eq!(Tuple::point(2.0, 7.0, 4.0), s * p);
+    }
+    #[test]
+    fn shearing_zx() {
+        let p = Tuple::point(2.0, 3.0, 4.0);
+        let s = Matrix4::shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+        assert_eq!(Tuple::point(2.0, 3.0, 6.0), s * p);
+    }
+    #[test]
+    fn shearing_zy() {
+        let p = Tuple::point(2.0, 3.0, 4.0);
+        let s = Matrix4::shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+        assert_eq!(Tuple::point(2.0, 3.0, 7.0), s * p);
+    }
+
+    #[test]
+    fn chain_transformations_individual() {
+        let p = Tuple::point(1.0, 0.0, 1.0);
+        let a = Matrix4::rotation_x(PI/2.0);
+        let b = Matrix4::scaling(5.0, 5.0, 5.0);
+        let c = Matrix4::translation(10.0, 5.0, 7.0);
+
+        let p2 = a * p;
+        assert_eq!(Tuple::point(1.0, -1.0, 0.0), p2);
+
+        let p3 = b * p2;
+        assert_eq!(Tuple::point(5.0, -5.0, 0.0), p3);
+
+        let p4 = c * p3;
+        assert_eq!(Tuple::point(15.0, 0.0, 7.0), p4);
+    }
+
+    #[test]
+    fn chain_transformations() {
+        let p = Tuple::point(1.0, 0.0, 1.0);
+        let a = Matrix4::rotation_x(PI/2.0);
+        let b = Matrix4::scaling(5.0, 5.0, 5.0);
+        let c = Matrix4::translation(10.0, 5.0, 7.0);
+
+        assert_eq!(Tuple::point(15.0, 0.0, 7.0), c * b * a * p);
     }
 }

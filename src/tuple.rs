@@ -75,10 +75,10 @@ impl Tuple {
 
 impl PartialEq<Tuple> for Tuple {
     fn eq(&self, rhs: &Tuple) -> bool {
-        (self.x - rhs.x).abs() < f32::EPSILON
-            && (self.y - rhs.y).abs() < f32::EPSILON
-            && (self.z - rhs.z).abs() < f32::EPSILON
-            && (self.w - rhs.w).abs() < f32::EPSILON
+        (self.x - rhs.x).abs() < f32::EPSILON * 10.0
+            && (self.y - rhs.y).abs() < f32::EPSILON * 10.0
+            && (self.z - rhs.z).abs() < f32::EPSILON * 10.0
+            && (self.w - rhs.w).abs() < f32::EPSILON * 10.0
     }
 }
 
