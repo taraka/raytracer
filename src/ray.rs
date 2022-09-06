@@ -1,18 +1,13 @@
-
 use crate::tuple::Tuple;
-use crate::sphere::Sphere;
 
 pub struct Ray {
-    pub origin: Tuple,  
+    pub origin: Tuple,
     pub direction: Tuple,
 }
 
 impl Ray {
     pub fn new(origin: Tuple, direction: Tuple) -> Self {
-        Self {
-            origin,
-            direction,
-        }
+        Self { origin, direction }
     }
 
     pub fn position(&self, t: f32) -> Tuple {
@@ -23,8 +18,8 @@ impl Ray {
 #[cfg(test)]
 mod tests {
     use crate::ray::Ray;
-    use crate::tuple::Tuple;
     use crate::sphere::Sphere;
+    use crate::tuple::Tuple;
 
     #[test]
     fn create_ray() {
@@ -42,7 +37,6 @@ mod tests {
         let d = Tuple::vector(1.0, 0.0, 0.0);
         let r = Ray::new(o, d);
 
-
         assert_eq!(Tuple::point(2.0, 3.0, 4.0), r.position(0.0));
         assert_eq!(Tuple::point(1.0, 3.0, 4.0), r.position(-1.0));
         assert_eq!(Tuple::point(4.5, 3.0, 4.0), r.position(2.5));
@@ -57,7 +51,6 @@ mod tests {
         let s = Sphere::new();
 
         let xs = s.intersect(r);
-
 
         assert_eq!(2, xs.len());
         assert_eq!(4.0, xs[0]);
@@ -74,7 +67,6 @@ mod tests {
 
         let xs = s.intersect(r);
 
-
         assert_eq!(2, xs.len());
         assert_eq!(5.0, xs[0]);
         assert_eq!(5.0, xs[1]);
@@ -90,7 +82,6 @@ mod tests {
 
         let xs = s.intersect(r);
 
-
         assert_eq!(0, xs.len());
     }
 
@@ -103,7 +94,6 @@ mod tests {
         let s = Sphere::new();
 
         let xs = s.intersect(r);
-
 
         assert_eq!(2, xs.len());
         assert_eq!(-1.0, xs[0]);
@@ -119,7 +109,6 @@ mod tests {
         let s = Sphere::new();
 
         let xs = s.intersect(r);
-
 
         assert_eq!(2, xs.len());
         assert_eq!(-6.0, xs[0]);

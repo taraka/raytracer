@@ -1,18 +1,20 @@
 use crate::ray::Ray;
 use crate::tuple::Tuple;
 
+use uuid::Uuid;
 
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Sphere {
-
+    id: Uuid,
 }
 
 impl Sphere {
     pub fn new() -> Self {
-        Self {}
+        Self { id: Uuid::new_v4() }
     }
 
     pub fn intersect(&self, ray: Ray) -> Vec<f32> {
-        let sphere_to_ray = ray.origin - Tuple::point(0.0, 0.0,0.0);
+        let sphere_to_ray = ray.origin - Tuple::point(0.0, 0.0, 0.0);
         let a = ray.direction.dot(&ray.direction);
         let b = 2.0 * ray.direction.dot(&sphere_to_ray);
         let c = sphere_to_ray.dot(&sphere_to_ray) - 1.0;

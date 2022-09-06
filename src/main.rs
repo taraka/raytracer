@@ -1,9 +1,10 @@
 mod canvas;
 mod color;
+mod intersection;
 mod matrix;
-mod tuple;
 mod ray;
 mod sphere;
+mod tuple;
 
 use crate::canvas::Canvas;
 use crate::color::Color;

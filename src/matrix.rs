@@ -123,7 +123,7 @@ impl Matrix4 {
         out
     }
 
-    fn shearing(xy: f32, xz: f32, yx: f32, yz: f32, zx: f32, zy: f32, ) -> Self {
+    fn shearing(xy: f32, xz: f32, yx: f32, yz: f32, zx: f32, zy: f32) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 1, xy);
@@ -236,7 +236,8 @@ impl Matrix2 {
 
 impl<const S: usize> PartialEq<Matrix<S>> for Matrix<S> {
     fn eq(&self, rhs: &Matrix<S>) -> bool {
-        (0..S).all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < 10.0 * f32::EPSILON))
+        (0..S)
+            .all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < 10.0 * f32::EPSILON))
     }
 }
 
@@ -560,14 +561,14 @@ mod tests {
             [3.0, -9.0, 7.0, 3.0],
             [3.0, -8.0, 2.0, -9.0],
             [-4.0, 4.0, 4.0, 1.0],
-            [-6.0, 5.0, -1.0, 1.0]
+            [-6.0, 5.0, -1.0, 1.0],
         ]);
 
         let b = Matrix4::new([
             [5.0, -9.0, 7.0, 3.0],
             [4.0, -8.0, 2.0, -9.0],
             [-4.0, -4.0, 4.0, 1.0],
-            [-9.0, 5.0, -33.0, 1.0]
+            [-9.0, 5.0, -33.0, 1.0],
         ]);
 
         let c = a * b;
@@ -629,7 +630,7 @@ mod tests {
         let p = Tuple::point(0.0, 1.0, 0.0);
         let r1 = Matrix4::rotation_x(PI / 4.0);
         let r2 = Matrix4::rotation_x(PI / 2.0);
-        
+
         assert_eq!(Tuple::point(0.0, 0.7071068, 0.7071068), r1 * p);
         assert_eq!(Tuple::point(0.0, 0.0, 1.0), r2 * p);
     }
@@ -639,7 +640,7 @@ mod tests {
         let p = Tuple::point(0.0, 0.0, 1.0);
         let r1 = Matrix4::rotation_y(PI / 4.0);
         let r2 = Matrix4::rotation_y(PI / 2.0);
-        
+
         assert_eq!(Tuple::point(0.7071068, 0.0, 0.7071068), r1 * p);
         assert_eq!(Tuple::point(1.0, 0.0, 0.0), r2 * p);
     }
@@ -649,7 +650,7 @@ mod tests {
         let p = Tuple::point(0.0, 1.0, 0.0);
         let r1 = Matrix4::rotation_z(PI / 4.0);
         let r2 = Matrix4::rotation_z(PI / 2.0);
-        
+
         assert_eq!(Tuple::point(-0.7071068, 0.7071068, 0.0), r1 * p);
         assert_eq!(Tuple::point(-1.0, 0.0, 0.0), r2 * p);
     }
@@ -672,7 +673,7 @@ mod tests {
         let s = Matrix4::shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
         assert_eq!(Tuple::point(2.0, 5.0, 4.0), s * p);
     }
-    
+
     #[test]
     fn shearing_yz() {
         let p = Tuple::point(2.0, 3.0, 4.0);
@@ -695,7 +696,7 @@ mod tests {
     #[test]
     fn chain_transformations_individual() {
         let p = Tuple::point(1.0, 0.0, 1.0);
-        let a = Matrix4::rotation_x(PI/2.0);
+        let a = Matrix4::rotation_x(PI / 2.0);
         let b = Matrix4::scaling(5.0, 5.0, 5.0);
         let c = Matrix4::translation(10.0, 5.0, 7.0);
 
@@ -712,7 +713,7 @@ mod tests {
     #[test]
     fn chain_transformations() {
         let p = Tuple::point(1.0, 0.0, 1.0);
-        let a = Matrix4::rotation_x(PI/2.0);
+        let a = Matrix4::rotation_x(PI / 2.0);
         let b = Matrix4::scaling(5.0, 5.0, 5.0);
         let c = Matrix4::translation(10.0, 5.0, 7.0);
 
