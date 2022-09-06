@@ -86,4 +86,17 @@ mod tests {
 
         assert_eq!(None, i.hit());
     }
+
+
+    #[test]
+    fn hit_order() {
+        let s = Sphere::new();
+        let a = Intersection::new(5.0, s);
+        let b = Intersection::new(7.0, s);
+        let c = Intersection::new(-3.0, s);
+        let d = Intersection::new(2.0, s);
+        let i = Intersections::new(vec![a, b, c, d]);
+
+        assert_eq!(d, i.hit().unwrap());
+    }
 }
