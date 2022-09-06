@@ -53,8 +53,8 @@ mod tests {
         let xs = s.intersect(r);
 
         assert_eq!(2, xs.len());
-        assert_eq!(4.0, xs[0]);
-        assert_eq!(6.0, xs[1]);
+        assert_eq!(4.0, xs[0].t);
+        assert_eq!(6.0, xs[1].t);
     }
 
     #[test]
@@ -68,8 +68,8 @@ mod tests {
         let xs = s.intersect(r);
 
         assert_eq!(2, xs.len());
-        assert_eq!(5.0, xs[0]);
-        assert_eq!(5.0, xs[1]);
+        assert_eq!(5.0, xs[0].t);
+        assert_eq!(5.0, xs[1].t);
     }
 
     #[test]
@@ -96,8 +96,8 @@ mod tests {
         let xs = s.intersect(r);
 
         assert_eq!(2, xs.len());
-        assert_eq!(-1.0, xs[0]);
-        assert_eq!(1.0, xs[1]);
+        assert_eq!(-1.0, xs[0].t);
+        assert_eq!(1.0, xs[1].t);
     }
 
     #[test]
@@ -111,7 +111,7 @@ mod tests {
         let xs = s.intersect(r);
 
         assert_eq!(2, xs.len());
-        assert_eq!(-6.0, xs[0]);
-        assert_eq!(-4.0, xs[1]);
+        assert_eq!(-6.0, xs[0].t);
+        assert_eq!(-4.0, xs[1].t);
     }
 }
