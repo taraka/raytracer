@@ -3,6 +3,7 @@ mod color;
 mod matrix;
 mod tuple;
 mod ray;
+mod sphere;
 
 use crate::canvas::Canvas;
 use crate::color::Color;
