@@ -25,6 +25,12 @@ impl Intersections {
     pub fn len(&self) -> usize {
         self.intersections.len()
     }
+
+    pub fn hit(&self) -> Option<Intersection> {
+        let mut candidates = self.intersections.iter().filter(|i| i.t >= 0.0).collect::<Vec<&Intersection>>();
+        candidates.sort_by(|a, b| a.t.partial_cmp(&b.t).unwrap());
+        candidates.get(0).map(|x| x.to_owned().to_owned())
+    }
 }
 
 impl ops::Index<usize> for Intersections {
@@ -49,5 +55,35 @@ mod tests {
 
         assert_eq!(2, i.len());
         assert_eq!(a, i[0]);
+    }
+
+    #[test]
+    fn hit_all_pos() {
+        let s = Sphere::new();
+        let a = Intersection::new(1.0, s);
+        let b = Intersection::new(2.0, s);
+        let i = Intersections::new(vec![a, b]);
+
+        assert_eq!(a, i.hit().unwrap());
+    }
+
+    #[test]
+    fn hit_neg_pos() {
+        let s = Sphere::new();
+        let a = Intersection::new(-1.0, s);
+        let b = Intersection::new(2.0, s);
+        let i = Intersections::new(vec![a, b]);
+
+        assert_eq!(b, i.hit().unwrap());
+    }
+
+    #[test]
+    fn hit_neg() {
+        let s = Sphere::new();
+        let a = Intersection::new(-1.0, s);
+        let b = Intersection::new(-2.0, s);
+        let i = Intersections::new(vec![a, b]);
+
+        assert_eq!(None, i.hit());
     }
 }
