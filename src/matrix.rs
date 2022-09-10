@@ -3,9 +3,9 @@ use std::ops;
 
 use crate::Tuple;
 
-type Matrix2 = Matrix<2>;
-type Matrix3 = Matrix<3>;
-type Matrix4 = Matrix<4>;
+pub type Matrix2 = Matrix<2>;
+pub type Matrix3 = Matrix<3>;
+pub type Matrix4 = Matrix<4>;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Matrix<const S: usize> {
@@ -61,7 +61,7 @@ impl<const S: usize> From<[[f32; S]; S]> for Matrix<S> {
 }
 
 impl Matrix4 {
-    fn identity() -> Self {
+    pub fn identity() -> Self {
         Self::new([
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
@@ -70,7 +70,7 @@ impl Matrix4 {
         ])
     }
 
-    fn translation(x: f32, y: f32, z: f32) -> Self {
+    pub fn translation(x: f32, y: f32, z: f32) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 3, x);
@@ -80,7 +80,7 @@ impl Matrix4 {
         out
     }
 
-    fn scaling(x: f32, y: f32, z: f32) -> Self {
+    pub fn scaling(x: f32, y: f32, z: f32) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, x);
@@ -90,7 +90,7 @@ impl Matrix4 {
         out
     }
 
-    fn rotation_x(r: f32) -> Self {
+    pub fn rotation_x(r: f32) -> Self {
         let mut out = Self::identity();
 
         out.set(1, 1, r.cos());
@@ -101,7 +101,7 @@ impl Matrix4 {
         out
     }
 
-    fn rotation_y(r: f32) -> Self {
+    pub fn rotation_y(r: f32) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, r.cos());
@@ -112,7 +112,7 @@ impl Matrix4 {
         out
     }
 
-    fn rotation_z(r: f32) -> Self {
+    pub fn rotation_z(r: f32) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, r.cos());
@@ -123,7 +123,7 @@ impl Matrix4 {
         out
     }
 
-    fn shearing(xy: f32, xz: f32, yx: f32, yz: f32, zx: f32, zy: f32) -> Self {
+    pub fn shearing(xy: f32, xz: f32, yx: f32, yz: f32, zx: f32, zy: f32) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 1, xy);

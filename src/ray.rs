@@ -1,4 +1,5 @@
 use crate::tuple::Tuple;
+use crate::matrix::Matrix4;
 
 pub struct Ray {
     pub origin: Tuple,
@@ -13,6 +14,13 @@ impl Ray {
     pub fn position(&self, t: f32) -> Tuple {
         self.origin + (self.direction * t)
     }
+
+    pub fn transform(&self, m: Matrix4) -> Self {
+        Self {
+            origin: m * self.origin,
+            direction: m * self.direction,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -20,6 +28,7 @@ mod tests {
     use crate::ray::Ray;
     use crate::sphere::Sphere;
     use crate::tuple::Tuple;
+    use crate::matrix::Matrix4;
 
     #[test]
     fn create_ray() {
@@ -113,5 +122,31 @@ mod tests {
         assert_eq!(2, xs.len());
         assert_eq!(-6.0, xs[0].t);
         assert_eq!(-4.0, xs[1].t);
+    }
+
+    #[test]
+    fn translate_ray() {
+        let o = Tuple::point(1.0, 2.0, 3.0);
+        let d = Tuple::vector(0.0, 1.0, 0.0);
+        let r = Ray::new(o, d);
+
+        let m = Matrix4::translation(3.0, 4.0, 5.0);
+
+        let r2 = r.transform(m);
+        assert_eq!(Tuple::point(4.0, 6.0, 8.0), r2.origin);
+        assert_eq!(Tuple::vector(0.0, 1.0, 0.0), r2.direction);
+    }
+
+    #[test]
+    fn scale_ray() {
+        let o = Tuple::point(1.0, 2.0, 3.0);
+        let d = Tuple::vector(0.0, 1.0, 0.0);
+        let r = Ray::new(o, d);
+
+        let m = Matrix4::scaling(2.0, 3.0, 4.0);
+
+        let r2 = r.transform(m);
+        assert_eq!(Tuple::point(2.0, 6.0, 12.0), r2.origin);
+        assert_eq!(Tuple::vector(0.0, 3.0, 0.0), r2.direction);
     }
 }
