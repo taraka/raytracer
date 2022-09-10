@@ -149,4 +149,32 @@ mod tests {
         assert_eq!(Tuple::point(2.0, 6.0, 12.0), r2.origin);
         assert_eq!(Tuple::vector(0.0, 3.0, 0.0), r2.direction);
     }
+
+    #[test]
+    fn intersect_ray_with_scaled_sphere() {
+        let o = Tuple::point(0.0, 0.0, -5.0);
+        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let r = Ray::new(o, d);
+        let mut s = Sphere::new();
+        s.set_transform(Matrix4::scaling(2.0, 2.0, 2.0));
+
+        let xs = s.intersect(r);
+
+        assert_eq!(2, xs.len());
+        assert_eq!(3.0, xs[0].t);
+        assert_eq!(7.0, xs[1].t);
+    }
+
+    #[test]
+    fn intersect_ray_with_translated_sphere() {
+        let o = Tuple::point(0.0, 0.0, -5.0);
+        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let r = Ray::new(o, d);
+        let mut s = Sphere::new();
+        s.set_transform(Matrix4::translation(5.0, 0.0, 0.0));
+
+        let xs = s.intersect(r);
+
+        assert_eq!(0, xs.len());
+    }
 }

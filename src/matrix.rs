@@ -170,7 +170,7 @@ impl Matrix4 {
         self.determinant() != 0.0
     }
 
-    fn inverse(&self) -> Matrix4 {
+    pub fn inverse(&self) -> Matrix4 {
         if !self.is_invertable() {
             panic!("Matrix is not invertable");
         }
