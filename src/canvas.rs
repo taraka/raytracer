@@ -40,7 +40,7 @@ impl Canvas {
                 curr_line_len = 0;
             }
 
-            let mut wp = |v: f32| {
+            let mut wp = |v: f64| {
                 let s = &format!("{} ", (v * 255.0).round() as u8);
                 curr_line_len += s.len();
                 if curr_line_len > 70 {

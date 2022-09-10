@@ -8,58 +8,45 @@ mod tuple;
 
 use crate::canvas::Canvas;
 use crate::color::Color;
+use crate::matrix::Matrix4;
+use crate::ray::Ray;
+use crate::sphere::Sphere;
 use crate::tuple::Tuple;
 
 use std::fs::File;
 use std::io::Write;
 
-struct Env {
-    wind: Tuple,
-    gravity: Tuple,
-}
-
-struct Projectile {
-    position: Tuple,
-    velocity: Tuple,
-}
-
 fn main() -> std::io::Result<()> {
-    let mut proj = Projectile {
-        position: Tuple::point(0.0, 1.0, 0.0),
-        velocity: Tuple::vector(1.0, 2.8, 0.0).normalize() * 11.25,
-    };
+    let ray_origin = Tuple::point(0.0, 0.0, -5.0);
+    let wall_z: f64 = 10.0;
+    let wall_size: f64 = 10.0;
+    let canvas_pixels: usize = 1000;
+    let pixel_size = wall_size / (canvas_pixels as f64);
+    let half: f64 = (wall_size as f64) / 2.0;
 
-    let env = Env {
-        wind: Tuple::vector(0.0, -0.1, 0.0),
-        gravity: Tuple::vector(-0.0, 0.0, 0.0),
-    };
+    let mut canvas = Canvas::new(canvas_pixels, canvas_pixels);
+    let color = Color::red();
+    let mut shape = Sphere::new();
 
-    let mut canvas = Canvas::new(900, 550);
+    shape.set_transform(
+        Matrix4::shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0) * Matrix4::scaling(0.5, 1.0, 1.0),
+    );
 
-    loop {
-        proj.tick(&env);
+    for y in 0..canvas_pixels {
+        let world_y = half - pixel_size * (y as f64);
+        for x in 0..canvas_pixels {
+            let world_x = (-half) + pixel_size * (x as f64);
+            let position = Tuple::point(world_x, world_y, wall_z);
+            let ray = Ray::new(ray_origin, (position - ray_origin).normalize());
+            let xs = shape.intersect(ray);
 
-        canvas.write_pixel(
-            proj.position.x as usize,
-            (900_f32 - proj.position.y) as usize,
-            Color::new(1.0, 0.0, 0.0),
-        );
-
-        if proj.position.y <= 0.0 {
-            break;
+            if xs.len() != 0 {
+                canvas.write_pixel(x, y, color);
+            }
         }
     }
-
-    println!("Hit the ground at {:?}", proj.position);
 
     let mut file = File::create("output.ppm")?;
     file.write_all(canvas.to_ppm().as_bytes())?;
     Ok(())
-}
-
-impl Projectile {
-    fn tick(&mut self, env: &Env) {
-        self.position = self.position + self.velocity;
-        self.velocity = self.velocity + env.gravity + env.wind;
-    }
 }

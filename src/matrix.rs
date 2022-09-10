@@ -9,21 +9,21 @@ pub type Matrix4 = Matrix<4>;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Matrix<const S: usize> {
-    data: [[f32; S]; S],
+    data: [[f64; S]; S],
 }
 
 impl<const S: usize> Matrix<{ S }> {
-    pub fn new(data: [[f32; S]; S]) -> Self {
+    pub fn new(data: [[f64; S]; S]) -> Self {
         Self { data }
     }
 
     #[inline]
-    pub fn get(&self, r: usize, c: usize) -> f32 {
+    pub fn get(&self, r: usize, c: usize) -> f64 {
         self.data[r][c]
     }
 
     #[inline]
-    pub fn set(&mut self, r: usize, c: usize, v: f32) {
+    pub fn set(&mut self, r: usize, c: usize, v: f64) {
         self.data[r][c] = v
     }
 
@@ -41,7 +41,7 @@ impl<const S: usize> Matrix<{ S }> {
 }
 
 impl<const S: usize> ops::Index<usize> for Matrix<S> {
-    type Output = [f32; S];
+    type Output = [f64; S];
 
     fn index(&self, index: usize) -> &Self::Output {
         &self.data[index]
@@ -54,8 +54,8 @@ impl<const S: usize> ops::IndexMut<usize> for Matrix<S> {
     }
 }
 
-impl<const S: usize> From<[[f32; S]; S]> for Matrix<S> {
-    fn from(data: [[f32; S]; S]) -> Self {
+impl<const S: usize> From<[[f64; S]; S]> for Matrix<S> {
+    fn from(data: [[f64; S]; S]) -> Self {
         Self { data }
     }
 }
@@ -70,7 +70,7 @@ impl Matrix4 {
         ])
     }
 
-    pub fn translation(x: f32, y: f32, z: f32) -> Self {
+    pub fn translation(x: f64, y: f64, z: f64) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 3, x);
@@ -80,7 +80,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn scaling(x: f32, y: f32, z: f32) -> Self {
+    pub fn scaling(x: f64, y: f64, z: f64) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, x);
@@ -90,7 +90,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn rotation_x(r: f32) -> Self {
+    pub fn rotation_x(r: f64) -> Self {
         let mut out = Self::identity();
 
         out.set(1, 1, r.cos());
@@ -101,7 +101,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn rotation_y(r: f32) -> Self {
+    pub fn rotation_y(r: f64) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, r.cos());
@@ -112,7 +112,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn rotation_z(r: f32) -> Self {
+    pub fn rotation_z(r: f64) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, r.cos());
@@ -123,7 +123,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn shearing(xy: f32, xz: f32, yx: f32, yz: f32, zx: f32, zy: f32) -> Self {
+    pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 1, xy);
@@ -152,17 +152,17 @@ impl Matrix4 {
         out
     }
 
-    fn minor(&self, r: usize, c: usize) -> f32 {
+    fn minor(&self, r: usize, c: usize) -> f64 {
         self.submatrix(r, c).determinant()
     }
 
-    fn cofactor(&self, r: usize, c: usize) -> f32 {
+    fn cofactor(&self, r: usize, c: usize) -> f64 {
         let minor = self.minor(r, c);
 
         return if (r + c) % 2 == 0 { minor } else { -minor };
     }
 
-    fn determinant(&self) -> f32 {
+    fn determinant(&self) -> f64 {
         (0..4).map(|c| self.get(0, c) * self.cofactor(0, c)).sum()
     }
 
@@ -209,17 +209,17 @@ impl Matrix3 {
         out
     }
 
-    fn minor(&self, r: usize, c: usize) -> f32 {
+    fn minor(&self, r: usize, c: usize) -> f64 {
         self.submatrix(r, c).determinant()
     }
 
-    fn cofactor(&self, r: usize, c: usize) -> f32 {
+    fn cofactor(&self, r: usize, c: usize) -> f64 {
         let minor = self.minor(r, c);
 
         return if (r + c) % 2 == 0 { minor } else { -minor };
     }
 
-    fn determinant(&self) -> f32 {
+    fn determinant(&self) -> f64 {
         (0..3).map(|c| self.get(0, c) * self.cofactor(0, c)).sum()
     }
 }
@@ -229,7 +229,7 @@ impl Matrix2 {
         Self::new([[1.0, 0.0], [0.0, 1.0]])
     }
 
-    fn determinant(&self) -> f32 {
+    fn determinant(&self) -> f64 {
         self.get(0, 0) * self.get(1, 1) - self.get(0, 1) * self.get(1, 0)
     }
 }
@@ -237,7 +237,7 @@ impl Matrix2 {
 impl<const S: usize> PartialEq<Matrix<S>> for Matrix<S> {
     fn eq(&self, rhs: &Matrix<S>) -> bool {
         (0..S)
-            .all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < 10.0 * f32::EPSILON))
+            .all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < 10.0 * f64::EPSILON))
     }
 }
 
@@ -269,7 +269,7 @@ impl<const S: usize> ops::Mul<Tuple> for Matrix<S> {
 
 #[cfg(test)]
 mod tests {
-    use std::f32::consts::PI;
+    use std::f64::consts::PI;
 
     use crate::matrix::Matrix2;
     use crate::matrix::Matrix3;

@@ -3,12 +3,12 @@ use std::ops;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Intersection {
-    pub t: f32,
+    pub t: f64,
     pub obj: Sphere,
 }
 
 impl Intersection {
-    pub fn new(t: f32, obj: Sphere) -> Self {
+    pub fn new(t: f64, obj: Sphere) -> Self {
         Self { t, obj }
     }
 }
@@ -27,7 +27,11 @@ impl Intersections {
     }
 
     pub fn hit(&self) -> Option<Intersection> {
-        let mut candidates = self.intersections.iter().filter(|i| i.t >= 0.0).collect::<Vec<&Intersection>>();
+        let mut candidates = self
+            .intersections
+            .iter()
+            .filter(|i| i.t >= 0.0)
+            .collect::<Vec<&Intersection>>();
         candidates.sort_by(|a, b| a.t.partial_cmp(&b.t).unwrap());
         candidates.get(0).map(|x| x.to_owned().to_owned())
     }
@@ -86,7 +90,6 @@ mod tests {
 
         assert_eq!(None, i.hit());
     }
-
 
     #[test]
     fn hit_order() {

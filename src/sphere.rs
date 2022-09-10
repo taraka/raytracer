@@ -1,7 +1,7 @@
 use crate::intersection::*;
+use crate::matrix::Matrix4;
 use crate::ray::Ray;
 use crate::tuple::Tuple;
-use crate::matrix::Matrix4;
 
 use uuid::Uuid;
 
@@ -13,7 +13,7 @@ pub struct Sphere {
 
 impl Sphere {
     pub fn new() -> Self {
-        Self { 
+        Self {
             id: Uuid::new_v4(),
             transform: Matrix4::identity(),
         }
@@ -48,10 +48,9 @@ impl Sphere {
 
 #[cfg(test)]
 mod tests {
-    use crate::sphere::Sphere;
     use crate::sphere::Matrix4;
+    use crate::sphere::Sphere;
 
-        
     #[test]
     fn sphere_default_transformation() {
         let s = Sphere::new();

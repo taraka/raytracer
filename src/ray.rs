@@ -1,6 +1,7 @@
-use crate::tuple::Tuple;
 use crate::matrix::Matrix4;
+use crate::tuple::Tuple;
 
+#[derive(Debug)]
 pub struct Ray {
     pub origin: Tuple,
     pub direction: Tuple,
@@ -11,7 +12,7 @@ impl Ray {
         Self { origin, direction }
     }
 
-    pub fn position(&self, t: f32) -> Tuple {
+    pub fn position(&self, t: f64) -> Tuple {
         self.origin + (self.direction * t)
     }
 
@@ -25,10 +26,10 @@ impl Ray {
 
 #[cfg(test)]
 mod tests {
+    use crate::matrix::Matrix4;
     use crate::ray::Ray;
     use crate::sphere::Sphere;
     use crate::tuple::Tuple;
-    use crate::matrix::Matrix4;
 
     #[test]
     fn create_ray() {
