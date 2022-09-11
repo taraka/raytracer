@@ -5,6 +5,8 @@ mod matrix;
 mod ray;
 mod sphere;
 mod tuple;
+mod light;
+mod material;
 
 type FP = f64;
 const EPSILON: FP = 0.00001;
