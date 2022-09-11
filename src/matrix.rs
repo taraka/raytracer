@@ -2,8 +2,8 @@ use std::fmt::Debug;
 use std::ops;
 
 use crate::Tuple;
-use crate::FP;
 use crate::EPSILON;
+use crate::FP;
 
 pub type Matrix2 = Matrix<2>;
 pub type Matrix3 = Matrix<3>;
@@ -238,8 +238,7 @@ impl Matrix2 {
 
 impl<const S: usize> PartialEq<Matrix<S>> for Matrix<S> {
     fn eq(&self, rhs: &Matrix<S>) -> bool {
-        (0..S)
-            .all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < EPSILON))
+        (0..S).all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < EPSILON))
     }
 }
 

@@ -1,7 +1,7 @@
+use crate::EPSILON;
+use crate::FP;
 use std::cmp::PartialEq;
 use std::ops;
-use crate::FP;
-use crate::EPSILON;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Tuple {
@@ -261,9 +261,15 @@ mod tests {
 
         assert_eq!(Tuple::vector(0.0, 0.0, 1.0).magnitude(), 1.0);
 
-        assert_eq!(Tuple::vector(1.0, 2.0, 3.0).magnitude(), (14.0 as FP).sqrt());
+        assert_eq!(
+            Tuple::vector(1.0, 2.0, 3.0).magnitude(),
+            (14.0 as FP).sqrt()
+        );
 
-        assert_eq!(Tuple::vector(-1.0, -2.0, -3.0).magnitude(), (14.0 as FP).sqrt());
+        assert_eq!(
+            Tuple::vector(-1.0, -2.0, -3.0).magnitude(),
+            (14.0 as FP).sqrt()
+        );
     }
 
     #[test]
@@ -279,7 +285,7 @@ mod tests {
         );
     }
 
-    #[test] 
+    #[test]
     fn magnitude_of_normal_vector() {
         assert!((Tuple::vector(1.0, 2.0, 3.0).normalize().magnitude() - 1.0).abs() < FP::EPSILON);
     }

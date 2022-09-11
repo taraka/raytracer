@@ -7,7 +7,7 @@ mod sphere;
 mod tuple;
 
 type FP = f64;
-const EPSILON: FP = 1000000000.0 * FP::EPSILON;
+const EPSILON: FP = 0.00001;
 
 use crate::canvas::Canvas;
 use crate::color::Color;
