@@ -270,12 +270,8 @@ impl<const S: usize> ops::Mul<Tuple> for Matrix<S> {
 
 #[cfg(test)]
 mod tests {
+    use crate::matrix::*;
     use std::f64::consts::PI;
-
-    use crate::matrix::Matrix2;
-    use crate::matrix::Matrix3;
-    use crate::matrix::Matrix4;
-    use crate::Tuple;
 
     #[test]
     fn basic_4x4() {

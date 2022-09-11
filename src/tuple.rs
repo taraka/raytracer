@@ -140,7 +140,7 @@ impl ops::Not for Tuple {
 
 #[cfg(test)]
 mod tests {
-    use crate::tuple::Tuple;
+    use crate::tuple::*;
     use crate::FP;
 
     #[test]

@@ -1,13 +1,13 @@
-
 use crate::color::Color;
 use crate::tuple::Tuple;
 
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Light {
     intensity: Color,
     position: Tuple,
 }
 
-impl Light{
+impl Light {
     fn new(intensity: Color, position: Tuple) -> Self {
         Self {
             intensity,
@@ -18,9 +18,7 @@ impl Light{
 
 #[cfg(test)]
 mod tests {
-    use crate::color::Color;
-    use crate::tuple::Tuple;
-    use crate::light::Light;
+    use crate::light::*;
 
     #[test]
     fn point_light_has_position_and_intensity() {

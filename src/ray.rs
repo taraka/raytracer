@@ -27,10 +27,8 @@ impl Ray {
 
 #[cfg(test)]
 mod tests {
-    use crate::matrix::Matrix4;
-    use crate::ray::Ray;
-    use crate::sphere::Sphere;
-    use crate::tuple::Tuple;
+    use crate::ray::*;
+    use crate::Sphere;
 
     #[test]
     fn create_ray() {

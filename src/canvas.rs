@@ -70,8 +70,7 @@ impl Canvas {
 
 #[cfg(test)]
 mod tests {
-    use crate::canvas::Canvas;
-    use crate::color::Color;
+    use crate::canvas::*;
 
     #[test]
     fn create_canvas() {

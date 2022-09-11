@@ -91,7 +91,7 @@ impl ops::Mul<FP> for Color {
 
 #[cfg(test)]
 mod tests {
-    use crate::color::Color;
+    use crate::color::*;
 
     #[test]
     fn colors_are_tuples() {

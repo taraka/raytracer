@@ -50,7 +50,6 @@ impl ops::Index<usize> for Intersections {
 #[cfg(test)]
 mod tests {
     use crate::intersection::*;
-    use crate::sphere::Sphere;
 
     #[test]
     fn interections() {

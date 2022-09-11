@@ -1,17 +1,17 @@
-
 use crate::color::Color;
 use crate::FP;
 
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Material {
-    color: Color,
-    ambient: FP,
-    diffuse: FP,
-    specular: FP,
-    shininess: FP,
+    pub color: Color,
+    pub ambient: FP,
+    pub diffuse: FP,
+    pub specular: FP,
+    pub shininess: FP,
 }
 
-impl Material{
-    fn new() -> Self {
+impl Material {
+    pub fn new() -> Self {
         Self {
             color: Color::white(),
             ambient: 0.1,
@@ -24,8 +24,7 @@ impl Material{
 
 #[cfg(test)]
 mod tests {
-    use crate::material::Material;
-    use crate::color::Color;
+    use crate::material::*;
 
     #[test]
     fn default_material() {

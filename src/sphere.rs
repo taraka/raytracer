@@ -1,8 +1,8 @@
 use crate::intersection::*;
+use crate::material::Material;
 use crate::matrix::Matrix4;
 use crate::ray::Ray;
 use crate::tuple::Tuple;
-use crate::FP;
 
 use uuid::Uuid;
 
@@ -10,6 +10,7 @@ use uuid::Uuid;
 pub struct Sphere {
     id: Uuid,
     pub transform: Matrix4,
+    pub material: Material,
 }
 
 impl Sphere {
@@ -17,6 +18,7 @@ impl Sphere {
         Self {
             id: Uuid::new_v4(),
             transform: Matrix4::identity(),
+            material: Material::new(),
         }
     }
 
@@ -57,9 +59,7 @@ impl Sphere {
 
 #[cfg(test)]
 mod tests {
-    use crate::sphere::Matrix4;
-    use crate::sphere::Sphere;
-    use crate::Tuple;
+    use crate::sphere::*;
     use crate::FP;
     use std::f64::consts::PI;
 
@@ -118,5 +118,15 @@ mod tests {
             -(2.0 as FP).sqrt() / 2.0,
         ));
         assert_eq!(Tuple::vector(0.0, 0.97014, -0.24254), n);
+    }
+
+    #[test]
+    fn assign_material() {
+        let mut s = Sphere::new();
+        let mut m = Material::new();
+        m.ambient = 1.0;
+        s.material = m;
+
+        assert_eq!(m, s.material);
     }
 }
