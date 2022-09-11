@@ -2,6 +2,7 @@ use crate::intersection::*;
 use crate::matrix::Matrix4;
 use crate::ray::Ray;
 use crate::tuple::Tuple;
+use crate::FP;
 
 use uuid::Uuid;
 

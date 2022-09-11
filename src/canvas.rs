@@ -1,5 +1,7 @@
 use crate::color::Color;
 
+use crate::FP;
+
 pub struct Canvas {
     pub width: usize,
     pub height: usize,
@@ -40,7 +42,7 @@ impl Canvas {
                 curr_line_len = 0;
             }
 
-            let mut wp = |v: f64| {
+            let mut wp = |v: FP| {
                 let s = &format!("{} ", (v * 255.0).round() as u8);
                 curr_line_len += s.len();
                 if curr_line_len > 70 {

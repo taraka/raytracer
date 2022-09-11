@@ -1,24 +1,26 @@
 use std::cmp::PartialEq;
 use std::ops;
+use crate::FP;
+use crate::EPSILON;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Tuple {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
-    pub w: f64,
+    pub x: FP,
+    pub y: FP,
+    pub z: FP,
+    pub w: FP,
 }
 
 impl Tuple {
-    pub fn new(x: f64, y: f64, z: f64, w: f64) -> Self {
+    pub fn new(x: FP, y: FP, z: FP, w: FP) -> Self {
         Self { x, y, z, w }
     }
 
-    pub fn point(x: f64, y: f64, z: f64) -> Self {
+    pub fn point(x: FP, y: FP, z: FP) -> Self {
         Self { x, y, z, w: 1.0 }
     }
 
-    pub fn vector(x: f64, y: f64, z: f64) -> Self {
+    pub fn vector(x: FP, y: FP, z: FP) -> Self {
         Self { x, y, z, w: 0.0 }
     }
 
@@ -30,7 +32,7 @@ impl Tuple {
         self.w == 0.0
     }
 
-    pub fn magnitude(&self) -> f64 {
+    pub fn magnitude(&self) -> FP {
         (self.x.powf(2.0) + self.y.powf(2.0) + self.z.powf(2.0) + self.w.powf(2.0)).sqrt()
     }
 
@@ -40,11 +42,11 @@ impl Tuple {
         Self::new(self.x / mag, self.y / mag, self.z / mag, self.w / mag)
     }
 
-    pub fn dot(self, rhs: &Tuple) -> f64 {
+    pub fn dot(self, rhs: &Tuple) -> FP {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z + self.w * rhs.w
     }
 
-    pub fn get(&self, i: usize) -> f64 {
+    pub fn get(&self, i: usize) -> FP {
         match i {
             0 => self.x,
             1 => self.y,
@@ -54,7 +56,7 @@ impl Tuple {
         }
     }
 
-    pub fn set(&mut self, i: usize, v: f64) {
+    pub fn set(&mut self, i: usize, v: FP) {
         match i {
             0 => self.x = v,
             1 => self.y = v,
@@ -75,10 +77,10 @@ impl Tuple {
 
 impl PartialEq<Tuple> for Tuple {
     fn eq(&self, rhs: &Tuple) -> bool {
-        (self.x - rhs.x).abs() < f64::EPSILON * 10.0
-            && (self.y - rhs.y).abs() < f64::EPSILON * 10.0
-            && (self.z - rhs.z).abs() < f64::EPSILON * 10.0
-            && (self.w - rhs.w).abs() < f64::EPSILON * 10.0
+        (self.x - rhs.x).abs() < EPSILON
+            && (self.y - rhs.y).abs() < EPSILON
+            && (self.z - rhs.z).abs() < EPSILON
+            && (self.w - rhs.w).abs() < EPSILON
     }
 }
 
@@ -108,18 +110,18 @@ impl ops::Sub<Tuple> for Tuple {
     }
 }
 
-impl ops::Mul<f64> for Tuple {
+impl ops::Mul<FP> for Tuple {
     type Output = Tuple;
 
-    fn mul(self, rhs: f64) -> Self {
+    fn mul(self, rhs: FP) -> Self {
         Self::new(self.x * rhs, self.y * rhs, self.z * rhs, self.w * rhs)
     }
 }
 
-impl ops::Div<f64> for Tuple {
+impl ops::Div<FP> for Tuple {
     type Output = Tuple;
 
-    fn div(self, rhs: f64) -> Self {
+    fn div(self, rhs: FP) -> Self {
         Self::new(self.x / rhs, self.y / rhs, self.z / rhs, self.w / rhs)
     }
 }
@@ -135,6 +137,7 @@ impl ops::Not for Tuple {
 #[cfg(test)]
 mod tests {
     use crate::tuple::Tuple;
+    use crate::FP;
 
     #[test]
     fn new_tuple_point() {
@@ -258,9 +261,9 @@ mod tests {
 
         assert_eq!(Tuple::vector(0.0, 0.0, 1.0).magnitude(), 1.0);
 
-        assert_eq!(Tuple::vector(1.0, 2.0, 3.0).magnitude(), 14.0_f64.sqrt());
+        assert_eq!(Tuple::vector(1.0, 2.0, 3.0).magnitude(), (14.0 as FP).sqrt());
 
-        assert_eq!(Tuple::vector(-1.0, -2.0, -3.0).magnitude(), 14.0_f64.sqrt());
+        assert_eq!(Tuple::vector(-1.0, -2.0, -3.0).magnitude(), (14.0 as FP).sqrt());
     }
 
     #[test]
@@ -276,9 +279,9 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test] 
     fn magnitude_of_normal_vector() {
-        assert!((Tuple::vector(1.0, 2.0, 3.0).normalize().magnitude() - 1.0).abs() < f64::EPSILON);
+        assert!((Tuple::vector(1.0, 2.0, 3.0).normalize().magnitude() - 1.0).abs() < FP::EPSILON);
     }
 
     #[test]

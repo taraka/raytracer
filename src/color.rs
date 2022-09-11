@@ -1,14 +1,17 @@
 use std::ops;
 
+use crate::FP;
+use crate::EPSILON;
+
 #[derive(Debug, Copy, Clone)]
 pub struct Color {
-    pub red: f64,
-    pub green: f64,
-    pub blue: f64,
+    pub red: FP,
+    pub green: FP,
+    pub blue: FP,
 }
 
 impl Color {
-    pub fn new(red: f64, green: f64, blue: f64) -> Self {
+    pub fn new(red: FP, green: FP, blue: FP) -> Self {
         Self { red, green, blue }
     }
 
@@ -36,10 +39,9 @@ impl Color {
 // Really not sure why I've had to go with 10x EPSILON here but I was getting issues when adding 0.1 to 0.6 and comparing to 0.7
 impl PartialEq<Color> for Color {
     fn eq(&self, rhs: &Color) -> bool {
-        println!("{}, {}", (self.green - rhs.green).abs(), f64::EPSILON);
-        (self.red - rhs.red).abs() < f64::EPSILON * 10.0
-            && (self.green - rhs.green).abs() < f64::EPSILON * 10.0
-            && (self.blue - rhs.blue).abs() < f64::EPSILON * 10.0
+        (self.red - rhs.red).abs() < EPSILON
+            && (self.green - rhs.green).abs() < EPSILON
+            && (self.blue - rhs.blue).abs() < EPSILON
     }
 }
 
@@ -79,10 +81,10 @@ impl ops::Mul<Color> for Color {
     }
 }
 
-impl ops::Mul<f64> for Color {
+impl ops::Mul<FP> for Color {
     type Output = Color;
 
-    fn mul(self, rhs: f64) -> Self {
+    fn mul(self, rhs: FP) -> Self {
         Self::new(self.red * rhs, self.green * rhs, self.blue * rhs)
     }
 }

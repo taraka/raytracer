@@ -2,6 +2,8 @@ use std::fmt::Debug;
 use std::ops;
 
 use crate::Tuple;
+use crate::FP;
+use crate::EPSILON;
 
 pub type Matrix2 = Matrix<2>;
 pub type Matrix3 = Matrix<3>;
@@ -9,21 +11,21 @@ pub type Matrix4 = Matrix<4>;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Matrix<const S: usize> {
-    data: [[f64; S]; S],
+    data: [[FP; S]; S],
 }
 
 impl<const S: usize> Matrix<{ S }> {
-    pub fn new(data: [[f64; S]; S]) -> Self {
+    pub fn new(data: [[FP; S]; S]) -> Self {
         Self { data }
     }
 
     #[inline]
-    pub fn get(&self, r: usize, c: usize) -> f64 {
+    pub fn get(&self, r: usize, c: usize) -> FP {
         self.data[r][c]
     }
 
     #[inline]
-    pub fn set(&mut self, r: usize, c: usize, v: f64) {
+    pub fn set(&mut self, r: usize, c: usize, v: FP) {
         self.data[r][c] = v
     }
 
@@ -41,7 +43,7 @@ impl<const S: usize> Matrix<{ S }> {
 }
 
 impl<const S: usize> ops::Index<usize> for Matrix<S> {
-    type Output = [f64; S];
+    type Output = [FP; S];
 
     fn index(&self, index: usize) -> &Self::Output {
         &self.data[index]
@@ -54,8 +56,8 @@ impl<const S: usize> ops::IndexMut<usize> for Matrix<S> {
     }
 }
 
-impl<const S: usize> From<[[f64; S]; S]> for Matrix<S> {
-    fn from(data: [[f64; S]; S]) -> Self {
+impl<const S: usize> From<[[FP; S]; S]> for Matrix<S> {
+    fn from(data: [[FP; S]; S]) -> Self {
         Self { data }
     }
 }
@@ -70,7 +72,7 @@ impl Matrix4 {
         ])
     }
 
-    pub fn translation(x: f64, y: f64, z: f64) -> Self {
+    pub fn translation(x: FP, y: FP, z: FP) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 3, x);
@@ -80,7 +82,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn scaling(x: f64, y: f64, z: f64) -> Self {
+    pub fn scaling(x: FP, y: FP, z: FP) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, x);
@@ -90,7 +92,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn rotation_x(r: f64) -> Self {
+    pub fn rotation_x(r: FP) -> Self {
         let mut out = Self::identity();
 
         out.set(1, 1, r.cos());
@@ -101,7 +103,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn rotation_y(r: f64) -> Self {
+    pub fn rotation_y(r: FP) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, r.cos());
@@ -112,7 +114,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn rotation_z(r: f64) -> Self {
+    pub fn rotation_z(r: FP) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 0, r.cos());
@@ -123,7 +125,7 @@ impl Matrix4 {
         out
     }
 
-    pub fn shearing(xy: f64, xz: f64, yx: f64, yz: f64, zx: f64, zy: f64) -> Self {
+    pub fn shearing(xy: FP, xz: FP, yx: FP, yz: FP, zx: FP, zy: FP) -> Self {
         let mut out = Self::identity();
 
         out.set(0, 1, xy);
@@ -152,17 +154,17 @@ impl Matrix4 {
         out
     }
 
-    fn minor(&self, r: usize, c: usize) -> f64 {
+    fn minor(&self, r: usize, c: usize) -> FP {
         self.submatrix(r, c).determinant()
     }
 
-    fn cofactor(&self, r: usize, c: usize) -> f64 {
+    fn cofactor(&self, r: usize, c: usize) -> FP {
         let minor = self.minor(r, c);
 
         return if (r + c) % 2 == 0 { minor } else { -minor };
     }
 
-    fn determinant(&self) -> f64 {
+    fn determinant(&self) -> FP {
         (0..4).map(|c| self.get(0, c) * self.cofactor(0, c)).sum()
     }
 
@@ -209,17 +211,17 @@ impl Matrix3 {
         out
     }
 
-    fn minor(&self, r: usize, c: usize) -> f64 {
+    fn minor(&self, r: usize, c: usize) -> FP {
         self.submatrix(r, c).determinant()
     }
 
-    fn cofactor(&self, r: usize, c: usize) -> f64 {
+    fn cofactor(&self, r: usize, c: usize) -> FP {
         let minor = self.minor(r, c);
 
         return if (r + c) % 2 == 0 { minor } else { -minor };
     }
 
-    fn determinant(&self) -> f64 {
+    fn determinant(&self) -> FP {
         (0..3).map(|c| self.get(0, c) * self.cofactor(0, c)).sum()
     }
 }
@@ -229,7 +231,7 @@ impl Matrix2 {
         Self::new([[1.0, 0.0], [0.0, 1.0]])
     }
 
-    fn determinant(&self) -> f64 {
+    fn determinant(&self) -> FP {
         self.get(0, 0) * self.get(1, 1) - self.get(0, 1) * self.get(1, 0)
     }
 }
@@ -237,7 +239,7 @@ impl Matrix2 {
 impl<const S: usize> PartialEq<Matrix<S>> for Matrix<S> {
     fn eq(&self, rhs: &Matrix<S>) -> bool {
         (0..S)
-            .all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < 10.0 * f64::EPSILON))
+            .all(|r| (0..r).all(|c| (self.data[r][c] - rhs.data[r][c]).abs() < EPSILON))
     }
 }
 

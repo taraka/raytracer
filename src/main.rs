@@ -6,6 +6,9 @@ mod ray;
 mod sphere;
 mod tuple;
 
+type FP = f64;
+const EPSILON: FP = 1000000000.0 * FP::EPSILON;
+
 use crate::canvas::Canvas;
 use crate::color::Color;
 use crate::matrix::Matrix4;
@@ -18,11 +21,11 @@ use std::io::Write;
 
 fn main() -> std::io::Result<()> {
     let ray_origin = Tuple::point(0.0, 0.0, -5.0);
-    let wall_z: f64 = 10.0;
-    let wall_size: f64 = 10.0;
+    let wall_z: FP = 10.0;
+    let wall_size: FP = 10.0;
     let canvas_pixels: usize = 1000;
-    let pixel_size = wall_size / (canvas_pixels as f64);
-    let half: f64 = (wall_size as f64) / 2.0;
+    let pixel_size = wall_size / (canvas_pixels as FP);
+    let half: FP = (wall_size as FP) / 2.0;
 
     let mut canvas = Canvas::new(canvas_pixels, canvas_pixels);
     let color = Color::red();
@@ -33,9 +36,9 @@ fn main() -> std::io::Result<()> {
     );
 
     for y in 0..canvas_pixels {
-        let world_y = half - pixel_size * (y as f64);
+        let world_y = half - pixel_size * (y as FP);
         for x in 0..canvas_pixels {
-            let world_x = (-half) + pixel_size * (x as f64);
+            let world_x = (-half) + pixel_size * (x as FP);
             let position = Tuple::point(world_x, world_y, wall_z);
             let ray = Ray::new(ray_origin, (position - ray_origin).normalize());
             let xs = shape.intersect(ray);

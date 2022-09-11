@@ -1,14 +1,16 @@
 use crate::sphere::Sphere;
 use std::ops;
 
+use crate::FP;
+
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Intersection {
-    pub t: f64,
+    pub t: FP,
     pub obj: Sphere,
 }
 
 impl Intersection {
-    pub fn new(t: f64, obj: Sphere) -> Self {
+    pub fn new(t: FP, obj: Sphere) -> Self {
         Self { t, obj }
     }
 }
