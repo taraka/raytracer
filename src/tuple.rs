@@ -130,10 +130,10 @@ impl ops::Div<FP> for Tuple {
     }
 }
 
-impl ops::Not for Tuple {
+impl ops::Neg for Tuple {
     type Output = Tuple;
 
-    fn not(self) -> Self {
+    fn neg(self) -> Self {
         Self::new(-self.x, -self.y, -self.z, -self.w)
     }
 }
@@ -228,7 +228,7 @@ mod tests {
     #[test]
     fn negate_tuple() {
         assert_eq!(
-            !Tuple::vector(-1.0, 2.0, 3.0),
+            -Tuple::vector(-1.0, 2.0, 3.0),
             Tuple::vector(1.0, -2.0, -3.0)
         );
     }
