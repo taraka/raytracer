@@ -66,12 +66,16 @@ impl Tuple {
         }
     }
 
-    pub fn cross(self, rhs: &Tuple) -> Tuple {
+    pub fn cross(&self, rhs: &Tuple) -> Self {
         Self::vector(
             self.y * rhs.z - self.z * rhs.y,
             self.z * rhs.x - self.x * rhs.z,
             self.x * rhs.y - self.y * rhs.x,
         )
+    }
+
+    pub fn reflect(self, n: &Tuple) -> Self {
+        self - (*n * 2.0) * self.dot(n)
     }
 }
 
@@ -306,5 +310,22 @@ mod tests {
         assert_eq!(a.cross(&b), Tuple::vector(-1.0, 2.0, -1.0));
 
         assert_eq!(b.cross(&a), Tuple::vector(1.0, -2.0, 1.0));
+    }
+
+    #[test]
+    fn reflecting_vector_at_45() {
+        let v = Tuple::vector(1.0, -1.0, 0.0);
+        let n = Tuple::vector(0.0, 1.0, 0.0);
+
+        assert_eq!(v.reflect(&n), Tuple::vector(1.0, 1.0, 0.0));
+    }
+
+    #[test]
+    fn reflecting_vector_from_slant() {
+        let v = Tuple::vector(0.0, -1.0, 0.0);
+        let a = (2.0 as FP).sqrt() / 2.0;
+        let n = Tuple::vector(a, a, 0.0);
+
+        assert_eq!(v.reflect(&n), Tuple::vector(1.0, 0.0, 0.0));
     }
 }
