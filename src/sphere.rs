@@ -22,7 +22,7 @@ impl Sphere {
         }
     }
 
-    pub fn intersect(&self, r: Ray) -> Intersections {
+    pub fn intersect(&self, r: &Ray) -> Intersections {
         let ray = r.transform(self.transform.inverse());
 
         let sphere_to_ray = ray.origin - Tuple::point(0.0, 0.0, 0.0);

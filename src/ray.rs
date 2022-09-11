@@ -59,7 +59,7 @@ mod tests {
 
         let s = Sphere::new();
 
-        let xs = s.intersect(r);
+        let xs = s.intersect(&r);
 
         assert_eq!(2, xs.len());
         assert_eq!(4.0, xs[0].t);
@@ -74,7 +74,7 @@ mod tests {
 
         let s = Sphere::new();
 
-        let xs = s.intersect(r);
+        let xs = s.intersect(&r);
 
         assert_eq!(2, xs.len());
         assert_eq!(5.0, xs[0].t);
@@ -89,7 +89,7 @@ mod tests {
 
         let s = Sphere::new();
 
-        let xs = s.intersect(r);
+        let xs = s.intersect(&r);
 
         assert_eq!(0, xs.len());
     }
@@ -102,7 +102,7 @@ mod tests {
 
         let s = Sphere::new();
 
-        let xs = s.intersect(r);
+        let xs = s.intersect(&r);
 
         assert_eq!(2, xs.len());
         assert_eq!(-1.0, xs[0].t);
@@ -117,7 +117,7 @@ mod tests {
 
         let s = Sphere::new();
 
-        let xs = s.intersect(r);
+        let xs = s.intersect(&r);
 
         assert_eq!(2, xs.len());
         assert_eq!(-6.0, xs[0].t);
@@ -158,7 +158,7 @@ mod tests {
         let mut s = Sphere::new();
         s.set_transform(Matrix4::scaling(2.0, 2.0, 2.0));
 
-        let xs = s.intersect(r);
+        let xs = s.intersect(&r);
 
         assert_eq!(2, xs.len());
         assert_eq!(3.0, xs[0].t);
@@ -173,7 +173,7 @@ mod tests {
         let mut s = Sphere::new();
         s.set_transform(Matrix4::translation(5.0, 0.0, 0.0));
 
-        let xs = s.intersect(r);
+        let xs = s.intersect(&r);
 
         assert_eq!(0, xs.len());
     }
