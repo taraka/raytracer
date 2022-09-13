@@ -315,9 +315,9 @@ mod tests {
         let a = vector(1.0, 2.0, 3.0);
         let b = vector(2.0, 3.0, 4.0);
 
-        assert_eq!(a.cross(&b), Tuple::vector(-1.0, 2.0, -1.0));
+        assert_eq!(a.cross(&b), vector(-1.0, 2.0, -1.0));
 
-        assert_eq!(b.cross(&a), Tuple::vector(1.0, -2.0, 1.0));
+        assert_eq!(b.cross(&a), vector(1.0, -2.0, 1.0));
     }
 
     #[test]

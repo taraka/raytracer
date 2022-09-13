@@ -2,7 +2,7 @@ use crate::Color;
 use crate::sphere::Sphere;
 use crate::light::PointLight;
 use crate::tuple::*;
-use crate::matrix::Matrix4;
+use crate::matrix::*;
 
 pub struct World {
     pub objects: Vec<Sphere>,
@@ -25,7 +25,7 @@ impl World {
         s1.material.diffuse = 0.7;
         s1.material.specular = 0.2;
 
-        s2.set_transform(Matrix4::scaling(0.5, 0.5, 0.5));
+        s2.set_transform(scaling(0.5, 0.5, 0.5));
 
         Self {
             objects: vec![s1, s2],
@@ -52,5 +52,7 @@ mod tests {
         assert_eq!(Some(PointLight::new(point(-10.0, 10.0, -10.0), Color::new(1.0, 1.0, 1.0))), w.light);
         assert_eq!(2, w.objects.len());
     }
+
+    // TODO: Intersect a world with a ray
 
 }

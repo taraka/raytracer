@@ -1,5 +1,5 @@
-use crate::matrix::Matrix4;
-use crate::tuple::Tuple;
+use crate::matrix::*;
+use crate::tuple::*;
 use crate::FP;
 
 #[derive(Debug)]
@@ -32,8 +32,8 @@ mod tests {
 
     #[test]
     fn create_ray() {
-        let o = Tuple::point(1.0, 2.0, 3.0);
-        let d = Tuple::vector(4.0, 5.0, 6.0);
+        let o = point(1.0, 2.0, 3.0);
+        let d = vector(4.0, 5.0, 6.0);
 
         let r = Ray::new(o, d);
         assert_eq!(o, r.origin);
@@ -42,19 +42,19 @@ mod tests {
 
     #[test]
     fn point_from_distance() {
-        let o = Tuple::point(2.0, 3.0, 4.0);
-        let d = Tuple::vector(1.0, 0.0, 0.0);
+        let o = point(2.0, 3.0, 4.0);
+        let d = vector(1.0, 0.0, 0.0);
         let r = Ray::new(o, d);
 
-        assert_eq!(Tuple::point(2.0, 3.0, 4.0), r.position(0.0));
-        assert_eq!(Tuple::point(1.0, 3.0, 4.0), r.position(-1.0));
-        assert_eq!(Tuple::point(4.5, 3.0, 4.0), r.position(2.5));
+        assert_eq!(point(2.0, 3.0, 4.0), r.position(0.0));
+        assert_eq!(point(1.0, 3.0, 4.0), r.position(-1.0));
+        assert_eq!(point(4.5, 3.0, 4.0), r.position(2.5));
     }
 
     #[test]
     fn ray_intersects_sphere_twice() {
-        let o = Tuple::point(0.0, 0.0, -5.0);
-        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let o = point(0.0, 0.0, -5.0);
+        let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
         let s = Sphere::new();
@@ -68,8 +68,8 @@ mod tests {
 
     #[test]
     fn ray_intersects_sphere_tangent() {
-        let o = Tuple::point(0.0, 1.0, -5.0);
-        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let o = point(0.0, 1.0, -5.0);
+        let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
         let s = Sphere::new();
@@ -83,8 +83,8 @@ mod tests {
 
     #[test]
     fn ray_misses_sphere() {
-        let o = Tuple::point(0.0, 2.0, -5.0);
-        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let o = point(0.0, 2.0, -5.0);
+        let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
         let s = Sphere::new();
@@ -96,8 +96,8 @@ mod tests {
 
     #[test]
     fn ray_inside_sphere() {
-        let o = Tuple::point(0.0, 0.0, 00.0);
-        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let o = point(0.0, 0.0, 00.0);
+        let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
         let s = Sphere::new();
@@ -111,8 +111,8 @@ mod tests {
 
     #[test]
     fn ray_behind_sphere() {
-        let o = Tuple::point(0.0, 0.0, 5.0);
-        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let o = point(0.0, 0.0, 5.0);
+        let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
         let s = Sphere::new();
@@ -126,37 +126,37 @@ mod tests {
 
     #[test]
     fn translate_ray() {
-        let o = Tuple::point(1.0, 2.0, 3.0);
-        let d = Tuple::vector(0.0, 1.0, 0.0);
+        let o = point(1.0, 2.0, 3.0);
+        let d = vector(0.0, 1.0, 0.0);
         let r = Ray::new(o, d);
 
-        let m = Matrix4::translation(3.0, 4.0, 5.0);
+        let m = translation(3.0, 4.0, 5.0);
 
         let r2 = r.transform(m);
-        assert_eq!(Tuple::point(4.0, 6.0, 8.0), r2.origin);
-        assert_eq!(Tuple::vector(0.0, 1.0, 0.0), r2.direction);
+        assert_eq!(point(4.0, 6.0, 8.0), r2.origin);
+        assert_eq!(vector(0.0, 1.0, 0.0), r2.direction);
     }
 
     #[test]
     fn scale_ray() {
-        let o = Tuple::point(1.0, 2.0, 3.0);
-        let d = Tuple::vector(0.0, 1.0, 0.0);
+        let o = point(1.0, 2.0, 3.0);
+        let d = vector(0.0, 1.0, 0.0);
         let r = Ray::new(o, d);
 
-        let m = Matrix4::scaling(2.0, 3.0, 4.0);
+        let m = scaling(2.0, 3.0, 4.0);
 
         let r2 = r.transform(m);
-        assert_eq!(Tuple::point(2.0, 6.0, 12.0), r2.origin);
-        assert_eq!(Tuple::vector(0.0, 3.0, 0.0), r2.direction);
+        assert_eq!(point(2.0, 6.0, 12.0), r2.origin);
+        assert_eq!(vector(0.0, 3.0, 0.0), r2.direction);
     }
 
     #[test]
     fn intersect_ray_with_scaled_sphere() {
-        let o = Tuple::point(0.0, 0.0, -5.0);
-        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let o = point(0.0, 0.0, -5.0);
+        let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
         let mut s = Sphere::new();
-        s.set_transform(Matrix4::scaling(2.0, 2.0, 2.0));
+        s.set_transform(scaling(2.0, 2.0, 2.0));
 
         let xs = s.intersect(&r);
 
@@ -167,11 +167,11 @@ mod tests {
 
     #[test]
     fn intersect_ray_with_translated_sphere() {
-        let o = Tuple::point(0.0, 0.0, -5.0);
-        let d = Tuple::vector(0.0, 0.0, 1.0);
+        let o = point(0.0, 0.0, -5.0);
+        let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
         let mut s = Sphere::new();
-        s.set_transform(Matrix4::translation(5.0, 0.0, 0.0));
+        s.set_transform(translation(5.0, 0.0, 0.0));
 
         let xs = s.intersect(&r);
 

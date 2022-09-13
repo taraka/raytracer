@@ -15,16 +15,15 @@ const EPSILON: FP = 0.00001;
 use crate::canvas::Canvas;
 use crate::color::Color;
 use crate::light::PointLight;
-use crate::matrix::Matrix4;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
-use crate::tuple::Tuple;
+use crate::tuple::*;
 
 use std::fs::File;
 use std::io::Write;
 
 fn main() -> std::io::Result<()> {
-    let ray_origin = Tuple::point(0.0, 0.0, -5.0);
+    let ray_origin = point(0.0, 0.0, -5.0);
     let wall_z: FP = 10.0;
     let wall_size: FP = 10.0;
     let canvas_pixels: usize = 1000;
@@ -35,19 +34,19 @@ fn main() -> std::io::Result<()> {
     let mut shape = Sphere::new();
     shape.material.color = Color::new(1.0, 0.2, 1.0);
 
-    let light_position = Tuple::point(-10.0, 10.0, -10.0);
+    let light_position = point(-10.0, 10.0, -10.0);
     let light_color = Color::white();
     let light = PointLight::new(light_position, light_color);
 
     // shape.set_transform(
-    //     Matrix4::shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0) * Matrix4::scaling(0.5, 1.0, 1.0),
+    //     shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0) * scaling(0.5, 1.0, 1.0),
     // );
 
     for y in 0..canvas_pixels {
         let world_y = half - pixel_size * (y as FP);
         for x in 0..canvas_pixels {
             let world_x = (-half) + pixel_size * (x as FP);
-            let position = Tuple::point(world_x, world_y, wall_z);
+            let position = point(world_x, world_y, wall_z);
             let ray = Ray::new(ray_origin, (position - ray_origin).normalize());
             let xs = shape.intersect(&ray);
 

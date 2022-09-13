@@ -1,6 +1,6 @@
 use crate::color::Color;
 use crate::light::PointLight;
-use crate::Tuple;
+use crate::*;
 use crate::FP;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
@@ -70,11 +70,11 @@ mod tests {
     #[test]
     fn lighting_with_eye_between_light_and_surface() {
         let m = Material::new();
-        let p = Tuple::point(0.0, 0.0, 0.0);
+        let p = point(0.0, 0.0, 0.0);
 
-        let eyev = Tuple::vector(0.0, 0.0, -1.0);
-        let normalv = Tuple::vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Tuple::point(0.0, 0.0, -10.0), Color::new(1.0, 1.0, 1.0));
+        let eyev = vector(0.0, 0.0, -1.0);
+        let normalv = vector(0.0, 0.0, -1.0);
+        let light = PointLight::new(point(0.0, 0.0, -10.0), Color::new(1.0, 1.0, 1.0));
 
         assert_eq!(
             Color::new(1.9, 1.9, 1.9),
@@ -85,12 +85,12 @@ mod tests {
     #[test]
     fn lighting_with_eye_between_light_and_surface_offset() {
         let m = Material::new();
-        let p = Tuple::point(0.0, 0.0, 0.0);
+        let p = point(0.0, 0.0, 0.0);
 
         let num = (2.0 as FP).sqrt() / 2.0;
-        let eyev = Tuple::vector(0.0, num, -num);
-        let normalv = Tuple::vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Tuple::point(0.0, 0.0, -10.0), Color::new(1.0, 1.0, 1.0));
+        let eyev = vector(0.0, num, -num);
+        let normalv = vector(0.0, 0.0, -1.0);
+        let light = PointLight::new(point(0.0, 0.0, -10.0), Color::new(1.0, 1.0, 1.0));
 
         assert_eq!(
             Color::new(1.0, 1.0, 1.0),
@@ -101,11 +101,11 @@ mod tests {
     #[test]
     fn lighting_with_eye_opposite_surface_offset_45() {
         let m = Material::new();
-        let p = Tuple::point(0.0, 0.0, 0.0);
+        let p = point(0.0, 0.0, 0.0);
 
-        let eyev = Tuple::vector(0.0, 0.0, -1.0);
-        let normalv = Tuple::vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Tuple::point(0.0, 10.0, -10.0), Color::new(1.0, 1.0, 1.0));
+        let eyev = vector(0.0, 0.0, -1.0);
+        let normalv = vector(0.0, 0.0, -1.0);
+        let light = PointLight::new(point(0.0, 10.0, -10.0), Color::new(1.0, 1.0, 1.0));
 
         let num: FP = 0.736396;
         assert_eq!(
@@ -117,13 +117,13 @@ mod tests {
     #[test]
     fn lighting_with_eye_inpath_of_reflection() {
         let m = Material::new();
-        let p = Tuple::point(0.0, 0.0, 0.0);
+        let p = point(0.0, 0.0, 0.0);
 
         let num = (2.0 as FP).sqrt() / 2.0;
 
-        let eyev = Tuple::vector(0.0, -num, -num);
-        let normalv = Tuple::vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(Tuple::point(0.0, 10.0, -10.0), Color::new(1.0, 1.0, 1.0));
+        let eyev = vector(0.0, -num, -num);
+        let normalv = vector(0.0, 0.0, -1.0);
+        let light = PointLight::new(point(0.0, 10.0, -10.0), Color::new(1.0, 1.0, 1.0));
 
         assert_eq!(
             Color::new(1.6364, 1.6364, 1.6364),

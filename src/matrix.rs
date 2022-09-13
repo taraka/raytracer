@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 use std::ops;
 
-use crate::Tuple;
+use crate::tuple::*;
 use crate::EPSILON;
 use crate::FP;
 
@@ -266,6 +266,30 @@ impl<const S: usize> ops::Mul<Tuple> for Matrix<S> {
         }
         out
     }
+}
+
+pub fn scaling(x: FP, y: FP, z: FP) -> Matrix4 {
+    Matrix4::scaling(x, y, z)
+}
+
+pub fn translation(x: FP, y: FP, z: FP) -> Matrix4 {
+    Matrix4::translation(x, y, z)
+}
+
+pub fn rotation_x(r: FP) -> Matrix4 {
+    Matrix4::rotation_x(r)
+}
+
+pub fn rotation_y(r: FP) -> Matrix4 {
+    Matrix4::rotation_y(r)
+}
+
+pub fn rotation_z(r: FP) -> Matrix4 {
+    Matrix4::rotation_z(r)
+}
+
+pub fn shearing(xy: FP, xz: FP, yx: FP, yz: FP, zx: FP, zy: FP) -> Matrix4 {
+    Matrix4::shearing(xy, xz, yx, yz, zx, zy)
 }
 
 #[cfg(test)]
@@ -575,145 +599,145 @@ mod tests {
 
     #[test]
     fn multiply_by_translation() {
-        let t = Matrix4::translation(5.0, -3.0, 2.0);
-        let p = Tuple::point(-3.0, 4.0, 5.0);
-        assert_eq!(Tuple::point(2.0, 1.0, 7.0), t * p);
+        let t = translation(5.0, -3.0, 2.0);
+        let p = point(-3.0, 4.0, 5.0);
+        assert_eq!(point(2.0, 1.0, 7.0), t * p);
     }
 
     #[test]
     fn multiply_by_translation_inverse() {
-        let t = Matrix4::translation(5.0, -3.0, 2.0);
-        let p = Tuple::point(-3.0, 4.0, 5.0);
-        assert_eq!(Tuple::point(-8.0, 7.0, 3.0), t.inverse() * p);
+        let t = translation(5.0, -3.0, 2.0);
+        let p = point(-3.0, 4.0, 5.0);
+        assert_eq!(point(-8.0, 7.0, 3.0), t.inverse() * p);
     }
 
     #[test]
     fn translation_does_not_effect_vectors() {
-        let t = Matrix4::translation(5.0, -3.0, 2.0);
-        let v = Tuple::vector(-3.0, 4.0, 5.0);
+        let t = translation(5.0, -3.0, 2.0);
+        let v = vector(-3.0, 4.0, 5.0);
         assert_eq!(v, t * v);
     }
 
     #[test]
     fn scaling_point() {
-        let s = Matrix4::scaling(2.0, 3.0, 4.0);
-        let p = Tuple::point(-4.0, 6.0, 8.0);
-        assert_eq!(Tuple::point(-8.0, 18.0, 32.0), s * p);
+        let s = scaling(2.0, 3.0, 4.0);
+        let p = point(-4.0, 6.0, 8.0);
+        assert_eq!(point(-8.0, 18.0, 32.0), s * p);
     }
 
     #[test]
     fn scaling_vector() {
-        let s = Matrix4::scaling(2.0, 3.0, 4.0);
-        let v = Tuple::vector(-4.0, 6.0, 8.0);
-        assert_eq!(Tuple::vector(-8.0, 18.0, 32.0), s * v);
+        let s = scaling(2.0, 3.0, 4.0);
+        let v = vector(-4.0, 6.0, 8.0);
+        assert_eq!(vector(-8.0, 18.0, 32.0), s * v);
     }
 
     #[test]
     fn scaling_vector_inverse() {
-        let s = Matrix4::scaling(2.0, 3.0, 4.0);
-        let v = Tuple::vector(-4.0, 6.0, 8.0);
-        assert_eq!(Tuple::vector(-2.0, 2.0, 2.0), s.inverse() * v);
+        let s = scaling(2.0, 3.0, 4.0);
+        let v = vector(-4.0, 6.0, 8.0);
+        assert_eq!(vector(-2.0, 2.0, 2.0), s.inverse() * v);
     }
 
     #[test]
     fn reflecting_point() {
-        let s = Matrix4::scaling(-1.0, 1.0, 1.0);
-        let p = Tuple::point(1.0, 2.0, 3.0);
-        assert_eq!(Tuple::point(-1.0, 2.0, 3.0), s.inverse() * p);
+        let s = scaling(-1.0, 1.0, 1.0);
+        let p = point(1.0, 2.0, 3.0);
+        assert_eq!(point(-1.0, 2.0, 3.0), s.inverse() * p);
     }
 
     #[test]
     fn rotate_x_point() {
-        let p = Tuple::point(0.0, 1.0, 0.0);
-        let r1 = Matrix4::rotation_x(PI / 4.0);
-        let r2 = Matrix4::rotation_x(PI / 2.0);
+        let p = point(0.0, 1.0, 0.0);
+        let r1 = rotation_x(PI / 4.0);
+        let r2 = rotation_x(PI / 2.0);
 
-        assert_eq!(Tuple::point(0.0, 0.7071068, 0.7071068), r1 * p);
-        assert_eq!(Tuple::point(0.0, 0.0, 1.0), r2 * p);
+        assert_eq!(point(0.0, 0.7071068, 0.7071068), r1 * p);
+        assert_eq!(point(0.0, 0.0, 1.0), r2 * p);
     }
 
     #[test]
     fn rotate_y_point() {
-        let p = Tuple::point(0.0, 0.0, 1.0);
-        let r1 = Matrix4::rotation_y(PI / 4.0);
-        let r2 = Matrix4::rotation_y(PI / 2.0);
+        let p = point(0.0, 0.0, 1.0);
+        let r1 = rotation_y(PI / 4.0);
+        let r2 = rotation_y(PI / 2.0);
 
-        assert_eq!(Tuple::point(0.7071068, 0.0, 0.7071068), r1 * p);
-        assert_eq!(Tuple::point(1.0, 0.0, 0.0), r2 * p);
+        assert_eq!(point(0.7071068, 0.0, 0.7071068), r1 * p);
+        assert_eq!(point(1.0, 0.0, 0.0), r2 * p);
     }
 
     #[test]
     fn rotate_z_point() {
-        let p = Tuple::point(0.0, 1.0, 0.0);
-        let r1 = Matrix4::rotation_z(PI / 4.0);
-        let r2 = Matrix4::rotation_z(PI / 2.0);
+        let p = point(0.0, 1.0, 0.0);
+        let r1 = rotation_z(PI / 4.0);
+        let r2 = rotation_z(PI / 2.0);
 
-        assert_eq!(Tuple::point(-0.7071068, 0.7071068, 0.0), r1 * p);
-        assert_eq!(Tuple::point(-1.0, 0.0, 0.0), r2 * p);
+        assert_eq!(point(-0.7071068, 0.7071068, 0.0), r1 * p);
+        assert_eq!(point(-1.0, 0.0, 0.0), r2 * p);
     }
 
     #[test]
     fn shearing_xy() {
-        let p = Tuple::point(2.0, 3.0, 4.0);
-        let s = Matrix4::shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-        assert_eq!(Tuple::point(5.0, 3.0, 4.0), s * p);
+        let p = point(2.0, 3.0, 4.0);
+        let s = shearing(1.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+        assert_eq!(point(5.0, 3.0, 4.0), s * p);
     }
     #[test]
     fn shearing_xz() {
-        let p = Tuple::point(2.0, 3.0, 4.0);
-        let s = Matrix4::shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
-        assert_eq!(Tuple::point(6.0, 3.0, 4.0), s * p);
+        let p = point(2.0, 3.0, 4.0);
+        let s = shearing(0.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+        assert_eq!(point(6.0, 3.0, 4.0), s * p);
     }
     #[test]
     fn shearing_yx() {
-        let p = Tuple::point(2.0, 3.0, 4.0);
-        let s = Matrix4::shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
-        assert_eq!(Tuple::point(2.0, 5.0, 4.0), s * p);
+        let p = point(2.0, 3.0, 4.0);
+        let s = shearing(0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
+        assert_eq!(point(2.0, 5.0, 4.0), s * p);
     }
 
     #[test]
     fn shearing_yz() {
-        let p = Tuple::point(2.0, 3.0, 4.0);
-        let s = Matrix4::shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-        assert_eq!(Tuple::point(2.0, 7.0, 4.0), s * p);
+        let p = point(2.0, 3.0, 4.0);
+        let s = shearing(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+        assert_eq!(point(2.0, 7.0, 4.0), s * p);
     }
     #[test]
     fn shearing_zx() {
-        let p = Tuple::point(2.0, 3.0, 4.0);
-        let s = Matrix4::shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-        assert_eq!(Tuple::point(2.0, 3.0, 6.0), s * p);
+        let p = point(2.0, 3.0, 4.0);
+        let s = shearing(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+        assert_eq!(point(2.0, 3.0, 6.0), s * p);
     }
     #[test]
     fn shearing_zy() {
-        let p = Tuple::point(2.0, 3.0, 4.0);
-        let s = Matrix4::shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-        assert_eq!(Tuple::point(2.0, 3.0, 7.0), s * p);
+        let p = point(2.0, 3.0, 4.0);
+        let s = shearing(0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+        assert_eq!(point(2.0, 3.0, 7.0), s * p);
     }
 
     #[test]
     fn chain_transformations_individual() {
-        let p = Tuple::point(1.0, 0.0, 1.0);
-        let a = Matrix4::rotation_x(PI / 2.0);
-        let b = Matrix4::scaling(5.0, 5.0, 5.0);
-        let c = Matrix4::translation(10.0, 5.0, 7.0);
+        let p = point(1.0, 0.0, 1.0);
+        let a = rotation_x(PI / 2.0);
+        let b = scaling(5.0, 5.0, 5.0);
+        let c = translation(10.0, 5.0, 7.0);
 
         let p2 = a * p;
-        assert_eq!(Tuple::point(1.0, -1.0, 0.0), p2);
+        assert_eq!(point(1.0, -1.0, 0.0), p2);
 
         let p3 = b * p2;
-        assert_eq!(Tuple::point(5.0, -5.0, 0.0), p3);
+        assert_eq!(point(5.0, -5.0, 0.0), p3);
 
         let p4 = c * p3;
-        assert_eq!(Tuple::point(15.0, 0.0, 7.0), p4);
+        assert_eq!(point(15.0, 0.0, 7.0), p4);
     }
 
     #[test]
     fn chain_transformations() {
-        let p = Tuple::point(1.0, 0.0, 1.0);
-        let a = Matrix4::rotation_x(PI / 2.0);
-        let b = Matrix4::scaling(5.0, 5.0, 5.0);
-        let c = Matrix4::translation(10.0, 5.0, 7.0);
+        let p = point(1.0, 0.0, 1.0);
+        let a = rotation_x(PI / 2.0);
+        let b = scaling(5.0, 5.0, 5.0);
+        let c = translation(10.0, 5.0, 7.0);
 
-        assert_eq!(Tuple::point(15.0, 0.0, 7.0), c * b * a * p);
+        assert_eq!(point(15.0, 0.0, 7.0), c * b * a * p);
     }
 }
