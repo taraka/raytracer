@@ -138,6 +138,14 @@ impl ops::Neg for Tuple {
     }
 }
 
+pub fn point(x: FP, y: FP, z: FP) -> Tuple {
+    Tuple::point(x, y, z)
+}
+
+pub fn vector(x: FP, y: FP, z: FP) -> Tuple {
+    Tuple::vector(x, y, z)
+}
+
 #[cfg(test)]
 mod tests {
     use crate::tuple::*;
@@ -172,7 +180,7 @@ mod tests {
     #[test]
     fn new_point() {
         assert_eq!(
-            Tuple::point(4.0, -4.0, 3.0),
+            point(4.0, -4.0, 3.0),
             Tuple::new(4.0, -4.0, 3.0, 1.0)
         );
     }
@@ -180,7 +188,7 @@ mod tests {
     #[test]
     fn new_vector() {
         assert_eq!(
-            Tuple::vector(4.0, -4.0, 3.0),
+            vector(4.0, -4.0, 3.0),
             Tuple::new(4.0, -4.0, 3.0, 0.0)
         );
     }
@@ -195,41 +203,41 @@ mod tests {
 
     #[test]
     fn subtract_point_from_point() {
-        let p1 = Tuple::point(3.0, 2.0, 1.0);
-        let p2 = Tuple::point(5.0, 6.0, 7.0);
+        let p1 = point(3.0, 2.0, 1.0);
+        let p2 = point(5.0, 6.0, 7.0);
 
-        assert_eq!(p1 - p2, Tuple::vector(-2.0, -4.0, -6.0));
+        assert_eq!(p1 - p2, vector(-2.0, -4.0, -6.0));
     }
 
     #[test]
     fn subtract_vector_from_point() {
-        let p = Tuple::point(3.0, 2.0, 1.0);
-        let v = Tuple::vector(5.0, 6.0, 7.0);
+        let p = point(3.0, 2.0, 1.0);
+        let v = vector(5.0, 6.0, 7.0);
 
-        assert_eq!(p - v, Tuple::point(-2.0, -4.0, -6.0));
+        assert_eq!(p - v, point(-2.0, -4.0, -6.0));
     }
 
     #[test]
     fn subtract_vector_from_vector() {
-        let v1 = Tuple::vector(3.0, 2.0, 1.0);
-        let v2 = Tuple::vector(5.0, 6.0, 7.0);
+        let v1 = vector(3.0, 2.0, 1.0);
+        let v2 = vector(5.0, 6.0, 7.0);
 
-        assert_eq!(v1 - v2, Tuple::vector(-2.0, -4.0, -6.0));
+        assert_eq!(v1 - v2, vector(-2.0, -4.0, -6.0));
     }
 
     #[test]
     fn subtract_zero_from_vector() {
-        let zero = Tuple::vector(0.0, 0.0, 0.0);
-        let v = Tuple::vector(1.0, -2.0, 3.0);
+        let zero = vector(0.0, 0.0, 0.0);
+        let v = vector(1.0, -2.0, 3.0);
 
-        assert_eq!(zero - v, Tuple::vector(-1.0, 2.0, -3.0));
+        assert_eq!(zero - v, vector(-1.0, 2.0, -3.0));
     }
 
     #[test]
     fn negate_tuple() {
         assert_eq!(
-            -Tuple::vector(-1.0, 2.0, 3.0),
-            Tuple::vector(1.0, -2.0, -3.0)
+            -vector(-1.0, 2.0, 3.0),
+            vector(1.0, -2.0, -3.0)
         );
     }
 
@@ -259,19 +267,19 @@ mod tests {
 
     #[test]
     fn magnitude_of_vector() {
-        assert_eq!(Tuple::vector(1.0, 0.0, 0.0).magnitude(), 1.0);
+        assert_eq!(vector(1.0, 0.0, 0.0).magnitude(), 1.0);
 
-        assert_eq!(Tuple::vector(0.0, 1.0, 0.0).magnitude(), 1.0);
+        assert_eq!(vector(0.0, 1.0, 0.0).magnitude(), 1.0);
 
-        assert_eq!(Tuple::vector(0.0, 0.0, 1.0).magnitude(), 1.0);
+        assert_eq!(vector(0.0, 0.0, 1.0).magnitude(), 1.0);
 
         assert_eq!(
-            Tuple::vector(1.0, 2.0, 3.0).magnitude(),
+            vector(1.0, 2.0, 3.0).magnitude(),
             (14.0 as FP).sqrt()
         );
 
         assert_eq!(
-            Tuple::vector(-1.0, -2.0, -3.0).magnitude(),
+            vector(-1.0, -2.0, -3.0).magnitude(),
             (14.0 as FP).sqrt()
         );
     }
@@ -279,33 +287,33 @@ mod tests {
     #[test]
     fn normalizing_vector() {
         assert_eq!(
-            Tuple::vector(4.0, 0.0, 0.0).normalize(),
-            Tuple::vector(1.0, 0.0, 0.0)
+            vector(4.0, 0.0, 0.0).normalize(),
+            vector(1.0, 0.0, 0.0)
         );
 
         assert_eq!(
-            Tuple::vector(1.0, 2.0, 3.0).normalize(),
-            Tuple::vector(0.26726124, 0.5345225, 0.8017837)
+            vector(1.0, 2.0, 3.0).normalize(),
+            vector(0.26726124, 0.5345225, 0.8017837)
         );
     }
 
     #[test]
     fn magnitude_of_normal_vector() {
-        assert!((Tuple::vector(1.0, 2.0, 3.0).normalize().magnitude() - 1.0).abs() < FP::EPSILON);
+        assert!((vector(1.0, 2.0, 3.0).normalize().magnitude() - 1.0).abs() < FP::EPSILON);
     }
 
     #[test]
     fn tuple_dot_product() {
         assert_eq!(
-            Tuple::vector(1.0, 2.0, 3.0).dot(&Tuple::vector(2.0, 3.0, 4.0)),
+            vector(1.0, 2.0, 3.0).dot(&vector(2.0, 3.0, 4.0)),
             20.0
         );
     }
 
     #[test]
     fn vector_cross_product() {
-        let a = Tuple::vector(1.0, 2.0, 3.0);
-        let b = Tuple::vector(2.0, 3.0, 4.0);
+        let a = vector(1.0, 2.0, 3.0);
+        let b = vector(2.0, 3.0, 4.0);
 
         assert_eq!(a.cross(&b), Tuple::vector(-1.0, 2.0, -1.0));
 
@@ -314,18 +322,18 @@ mod tests {
 
     #[test]
     fn reflecting_vector_at_45() {
-        let v = Tuple::vector(1.0, -1.0, 0.0);
-        let n = Tuple::vector(0.0, 1.0, 0.0);
+        let v = vector(1.0, -1.0, 0.0);
+        let n = vector(0.0, 1.0, 0.0);
 
-        assert_eq!(v.reflect(&n), Tuple::vector(1.0, 1.0, 0.0));
+        assert_eq!(v.reflect(&n), vector(1.0, 1.0, 0.0));
     }
 
     #[test]
     fn reflecting_vector_from_slant() {
-        let v = Tuple::vector(0.0, -1.0, 0.0);
+        let v = vector(0.0, -1.0, 0.0);
         let a = (2.0 as FP).sqrt() / 2.0;
-        let n = Tuple::vector(a, a, 0.0);
+        let n = vector(a, a, 0.0);
 
-        assert_eq!(v.reflect(&n), Tuple::vector(1.0, 0.0, 0.0));
+        assert_eq!(v.reflect(&n), vector(1.0, 0.0, 0.0));
     }
 }

@@ -7,6 +7,7 @@ mod matrix;
 mod ray;
 mod sphere;
 mod tuple;
+mod world;
 
 type FP = f64;
 const EPSILON: FP = 0.00001;
