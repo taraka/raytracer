@@ -179,18 +179,12 @@ mod tests {
 
     #[test]
     fn new_point() {
-        assert_eq!(
-            point(4.0, -4.0, 3.0),
-            Tuple::new(4.0, -4.0, 3.0, 1.0)
-        );
+        assert_eq!(point(4.0, -4.0, 3.0), Tuple::new(4.0, -4.0, 3.0, 1.0));
     }
 
     #[test]
     fn new_vector() {
-        assert_eq!(
-            vector(4.0, -4.0, 3.0),
-            Tuple::new(4.0, -4.0, 3.0, 0.0)
-        );
+        assert_eq!(vector(4.0, -4.0, 3.0), Tuple::new(4.0, -4.0, 3.0, 0.0));
     }
 
     #[test]
@@ -235,10 +229,7 @@ mod tests {
 
     #[test]
     fn negate_tuple() {
-        assert_eq!(
-            -vector(-1.0, 2.0, 3.0),
-            vector(1.0, -2.0, -3.0)
-        );
+        assert_eq!(-vector(-1.0, 2.0, 3.0), vector(1.0, -2.0, -3.0));
     }
 
     #[test]
@@ -273,23 +264,14 @@ mod tests {
 
         assert_eq!(vector(0.0, 0.0, 1.0).magnitude(), 1.0);
 
-        assert_eq!(
-            vector(1.0, 2.0, 3.0).magnitude(),
-            (14.0 as FP).sqrt()
-        );
+        assert_eq!(vector(1.0, 2.0, 3.0).magnitude(), (14.0 as FP).sqrt());
 
-        assert_eq!(
-            vector(-1.0, -2.0, -3.0).magnitude(),
-            (14.0 as FP).sqrt()
-        );
+        assert_eq!(vector(-1.0, -2.0, -3.0).magnitude(), (14.0 as FP).sqrt());
     }
 
     #[test]
     fn normalizing_vector() {
-        assert_eq!(
-            vector(4.0, 0.0, 0.0).normalize(),
-            vector(1.0, 0.0, 0.0)
-        );
+        assert_eq!(vector(4.0, 0.0, 0.0).normalize(), vector(1.0, 0.0, 0.0));
 
         assert_eq!(
             vector(1.0, 2.0, 3.0).normalize(),
@@ -304,10 +286,7 @@ mod tests {
 
     #[test]
     fn tuple_dot_product() {
-        assert_eq!(
-            vector(1.0, 2.0, 3.0).dot(&vector(2.0, 3.0, 4.0)),
-            20.0
-        );
+        assert_eq!(vector(1.0, 2.0, 3.0).dot(&vector(2.0, 3.0, 4.0)), 20.0);
     }
 
     #[test]

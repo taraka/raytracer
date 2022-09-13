@@ -1,13 +1,15 @@
 use crate::sphere::Sphere;
+use std::cmp::Ordering;
 use std::ops;
 
 use crate::FP;
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Intersection {
     pub t: FP,
     pub obj: Sphere,
 }
+
 
 impl Intersection {
     pub fn new(t: FP, obj: Sphere) -> Self {
@@ -15,6 +17,21 @@ impl Intersection {
     }
 }
 
+impl PartialOrd for Intersection {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Intersection {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.t.partial_cmp(&other.t).unwrap()
+    }
+}
+
+impl Eq for Intersection {}
+
+#[derive(Debug, PartialEq)]
 pub struct Intersections {
     pub intersections: Vec<Intersection>,
 }

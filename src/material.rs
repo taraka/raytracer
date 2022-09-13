@@ -1,7 +1,7 @@
 use crate::color::Color;
 use crate::light::PointLight;
-use crate::*;
 use crate::FP;
+use crate::*;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Material {
