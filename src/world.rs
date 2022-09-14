@@ -57,7 +57,7 @@ impl World {
 
     pub fn color_at(&self, r: &Ray) -> Color {
         let xs = self.intersect(r);
-        println!("{:?}", xs);
+        
         if let Some(hit) = xs.hit() {
             let comps = hit.prepare_computations(r);
 

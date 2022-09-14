@@ -58,8 +58,8 @@ impl Camera {
     pub fn render(&self, w: &World) -> Canvas {
         let mut image = Canvas::new(self.hsize, self.vsize);
 
-        for x in 0..(self.vsize - 1) {
-            for y in 0..(self.hsize - 1) {
+        for x in 0..(self.hsize - 1) {
+            for y in 0..(self.vsize - 1) {
                 let ray = self.ray_for_pixel(x, y);
                 let color = w.color_at(&ray);
                 image.write_pixel(x, y, color);
