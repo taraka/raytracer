@@ -1,10 +1,10 @@
+use crate::intersection::*;
 use crate::light::PointLight;
 use crate::matrix::*;
+use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::tuple::*;
 use crate::Color;
-use crate::intersection::*;
-use crate::ray::Ray;
 
 pub struct World {
     pub objects: Vec<Sphere>,
@@ -39,9 +39,20 @@ impl World {
     }
 
     pub fn intersect(&self, r: &Ray) -> Intersections {
-        let mut v:Vec<Intersection> = self.objects.iter().flat_map(|o| o.intersect(r).intersections ).collect();
+        let mut v: Vec<Intersection> = self
+            .objects
+            .iter()
+            .flat_map(|o| o.intersect(r).intersections)
+            .collect();
         v.sort();
         Intersections::new(v)
+    }
+
+    pub fn shade_hit(&self, comps: &Computations) -> Color {
+        comps
+            .obj
+            .material
+            .lighting(self.light.unwrap(), comps.point, comps.eyev, comps.normalv)
     }
 }
 
@@ -82,5 +93,30 @@ mod tests {
         assert_eq!(4.5, xs[1].t);
         assert_eq!(5.5, xs[2].t);
         assert_eq!(6.0, xs[3].t);
+    }
+
+    #[test]
+    fn shading_an_intersection() {
+        let w = World::default();
+        let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 0.0, 1.0));
+        let s = w.objects[0];
+        let i = Intersection::new(4.0, s);
+        let comps = i.prepare_computations(&r);
+        let c = w.shade_hit(&comps);
+
+        assert_eq!(c, Color::new(0.38066, 0.47583, 0.2855));
+    }
+
+    #[test]
+    fn shading_an_intersection_inside() {
+        let mut w = World::default();
+        w.light = Some(PointLight::new(point(0.0, 0.25, 0.0), Color::white()));
+        let r = Ray::new(point(0.0, 0.0, 0.0), vector(0.0, 0.0, 1.0));
+        let s = w.objects[1];
+        let i = Intersection::new(0.5, s);
+        let comps = i.prepare_computations(&r);
+        let c = w.shade_hit(&comps);
+
+        assert_eq!(c, Color::new(0.90498, 0.90498, 0.90498));
     }
 }
