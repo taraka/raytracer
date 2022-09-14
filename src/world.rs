@@ -54,6 +54,18 @@ impl World {
             .material
             .lighting(self.light.unwrap(), comps.point, comps.eyev, comps.normalv)
     }
+
+    pub fn color_at(&self, r: &Ray) -> Color {
+        let xs = self.intersect(r);
+        println!("{:?}", xs);
+        if let Some(hit) = xs.hit() {
+            let comps = hit.prepare_computations(r);
+
+            self.shade_hit(&comps)
+        } else {
+            Color::black()
+        }
+    }
 }
 
 #[cfg(test)]
@@ -118,5 +130,35 @@ mod tests {
         let c = w.shade_hit(&comps);
 
         assert_eq!(c, Color::new(0.90498, 0.90498, 0.90498));
+    }
+
+    #[test]
+    fn shading_miss() {
+        let w = World::default();
+        let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 1.0, 0.0));
+        let c = w.color_at(&r);
+
+        assert_eq!(c, Color::black());
+    }
+
+    #[test]
+    fn shading_hit() {
+        let w = World::default();
+        let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 0.0, 1.0));
+        let c = w.color_at(&r);
+
+        assert_eq!(c, Color::new(0.38066, 0.47583, 0.2855));
+    }
+
+    #[test]
+    fn shading_behind() {
+        let mut w = World::default();
+        w.objects[0].material.ambient = 1.0;
+        w.objects[1].material.ambient = 1.0;
+
+        let r = Ray::new(point(0.0, 0.0, 0.75), vector(0.0, 0.0, -1.0));
+        let c = w.color_at(&r);
+
+        assert_eq!(c, w.objects[1].material.color);
     }
 }
