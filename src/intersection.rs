@@ -1,5 +1,6 @@
 use crate::ray::Ray;
 use crate::sphere::Sphere;
+use crate::shape::*;
 use crate::tuple::*;
 use crate::EPSILON;
 use std::cmp::Ordering;

@@ -3,6 +3,7 @@ use crate::material::Material;
 use crate::matrix::*;
 use crate::ray::Ray;
 use crate::tuple::*;
+use crate::shape::*;
 
 use uuid::Uuid;
 
@@ -21,10 +22,26 @@ impl Sphere {
             material: Material::new(),
         }
     }
+}
 
-    pub fn intersect(&self, r: &Ray) -> Intersections {
-        let ray = r.transform(self.transform.inverse());
+impl Shape for Sphere {
+    fn set_transform(&mut self, m: Matrix4) {
+        self.transform = m;
+    }
 
+    fn get_transform(&self) -> &Matrix4 {
+        return &self.transform;
+    }
+
+    fn set_material(&mut self, m: Material) {
+        self.material = m;
+    }
+
+    fn get_material(&self) -> &Material {
+        return &self.material;
+    }
+
+    fn local_intersect(&self, ray: &Ray) -> Intersections {
         let sphere_to_ray = ray.origin - point(0.0, 0.0, 0.0);
         let a = ray.direction.dot(&ray.direction);
         let b = 2.0 * ray.direction.dot(&sphere_to_ray);
@@ -44,16 +61,8 @@ impl Sphere {
         ])
     }
 
-    pub fn set_transform(&mut self, m: Matrix4) {
-        self.transform = m;
-    }
-
-    pub fn normal_at(&self, p: Tuple) -> Tuple {
-        let object_point = self.transform.inverse() * p;
-        let object_normal = object_point - point(0.0, 0.0, 0.0);
-        let mut world_normal = self.transform.inverse().transpose() * object_normal;
-        world_normal.w = 0.0;
-        world_normal.normalize()
+    fn local_normal_at(&self, object_point: Tuple) -> Tuple {
+        object_point - point(0.0, 0.0, 0.0)
     }
 }
 

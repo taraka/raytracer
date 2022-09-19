@@ -1,6 +1,7 @@
 use crate::matrix::*;
 use crate::tuple::*;
 use crate::FP;
+use crate::shape::Shape;
 
 #[derive(Debug, PartialEq)]
 pub struct Ray {

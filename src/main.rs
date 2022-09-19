@@ -6,6 +6,7 @@ mod light;
 mod material;
 mod matrix;
 mod ray;
+mod shape;
 mod sphere;
 mod tuple;
 mod world;

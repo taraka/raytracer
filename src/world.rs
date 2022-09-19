@@ -5,6 +5,7 @@ use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::tuple::*;
 use crate::Color;
+use crate::shape::Shape;
 
 pub struct World {
     pub objects: Vec<Sphere>,
