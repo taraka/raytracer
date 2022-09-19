@@ -13,22 +13,21 @@ mod world;
 type FP = f64;
 const EPSILON: FP = 0.00001;
 
-use std::f64::consts::PI;
+use crate::camera::Camera;
 use crate::canvas::Canvas;
 use crate::color::Color;
 use crate::light::PointLight;
+use crate::matrix::*;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::tuple::*;
-use crate::matrix::*;
 use crate::world::World;
-use crate::camera::Camera;
+use std::f64::consts::PI;
 
 use std::fs::File;
 use std::io::Write;
 
 fn main() -> std::io::Result<()> {
-    
     let mut world = World::new();
 
     let mut floor = Sphere::new();
@@ -39,13 +38,19 @@ fn main() -> std::io::Result<()> {
     world.objects.push(floor);
 
     let mut left_wall = Sphere::new();
-    left_wall.transform = translation(0.0, 0.0, 5.0) * rotation_y(-PI / 4.0) * rotation_x(PI / 2.0) * scaling(10.0, 0.01, 10.0);
+    left_wall.transform = translation(0.0, 0.0, 5.0)
+        * rotation_y(-PI / 4.0)
+        * rotation_x(PI / 2.0)
+        * scaling(10.0, 0.01, 10.0);
     left_wall.material = floor.material;
 
     world.objects.push(left_wall);
 
     let mut right_wall = Sphere::new();
-    right_wall.transform = translation(0.0, 0.0, 5.0) * rotation_y(PI / 4.0) * rotation_x(PI / 2.0) * scaling(10.0, 0.01, 10.0);
+    right_wall.transform = translation(0.0, 0.0, 5.0)
+        * rotation_y(PI / 4.0)
+        * rotation_x(PI / 2.0)
+        * scaling(10.0, 0.01, 10.0);
     right_wall.material = floor.material;
 
     world.objects.push(right_wall);
@@ -74,11 +79,17 @@ fn main() -> std::io::Result<()> {
 
     world.objects.push(left);
 
+    world.light = Some(PointLight::new(
+        point(-10.0, 10.0, -10.0),
+        Color::new(1.0, 1.0, 1.0),
+    ));
 
-    world.light = Some(PointLight::new(point(-10.0, 10.0, -10.0), Color::new(1.0, 1.0, 1.0)));
-
-    let mut camera = Camera::new(2000, 1000, PI/3.0);
-    camera.transform = Matrix4::view_transform(point(0.0, 1.5, -5.0), point(0.0, 1.0, 0.0), vector(0.0, 1.0, 0.0));
+    let mut camera = Camera::new(2000, 1000, PI / 3.0);
+    camera.transform = Matrix4::view_transform(
+        point(0.0, 1.5, -5.0),
+        point(0.0, 1.0, 0.0),
+        vector(0.0, 1.0, 0.0),
+    );
 
     let canvas = camera.render(&world);
 

@@ -1,6 +1,7 @@
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::tuple::*;
+use crate::EPSILON;
 use std::cmp::Ordering;
 use std::ops;
 
@@ -17,6 +18,7 @@ pub struct Computations {
     pub t: FP,
     pub obj: Sphere,
     pub point: Tuple,
+    pub over_point: Tuple,
     pub eyev: Tuple,
     pub normalv: Tuple,
     pub inside: bool,
@@ -38,10 +40,13 @@ impl Intersection {
             normalv = -normalv;
         }
 
+        let over_point = point + (normalv * EPSILON);
+
         Computations {
             t: self.t,
             obj: self.obj,
             point,
+            over_point,
             eyev,
             normalv,
             inside,
@@ -99,6 +104,7 @@ impl ops::Index<usize> for Intersections {
 #[cfg(test)]
 mod tests {
     use crate::intersection::*;
+    use crate::matrix::*;
 
     #[test]
     fn interections() {
@@ -185,5 +191,17 @@ mod tests {
         assert_eq!(comps.point, point(0.0, 0.0, 1.0));
         assert_eq!(comps.eyev, vector(0.0, 0.0, -1.0));
         assert_eq!(comps.normalv, vector(0.0, 0.0, -1.0));
+    }
+
+    #[test]
+    fn hit_should_offset_the_point() {
+        let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 0.0, 1.0));
+        let mut shape = Sphere::new();
+        shape.transform = translation(0.0, 0.0, 1.0);
+        let i = Intersection::new(5.0, shape);
+        let comps = i.prepare_computations(&r);
+
+        assert!(comps.over_point.z < -EPSILON / 2.0);
+        assert!(comps.point.z > comps.over_point.z);
     }
 }

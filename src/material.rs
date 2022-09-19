@@ -23,12 +23,23 @@ impl Material {
         }
     }
 
-    pub fn lighting(&self, light: PointLight, point: Tuple, eyev: Tuple, normalv: Tuple) -> Color {
+    pub fn lighting(
+        &self,
+        light: PointLight,
+        point: Tuple,
+        eyev: Tuple,
+        normalv: Tuple,
+        in_shadow: bool,
+    ) -> Color {
         let effective_color = self.color * light.intensity;
         let lightv = (light.position - point).normalize();
         let ambient = effective_color * self.ambient;
-        let light_dot_normal = lightv.dot(&normalv);
 
+        if in_shadow {
+            return ambient;
+        }
+
+        let light_dot_normal = lightv.dot(&normalv);
         let diffuse: Color;
         let specular: Color;
 
@@ -78,7 +89,7 @@ mod tests {
 
         assert_eq!(
             Color::new(1.9, 1.9, 1.9),
-            m.lighting(light, p, eyev, normalv)
+            m.lighting(light, p, eyev, normalv, false)
         );
     }
 
@@ -94,7 +105,7 @@ mod tests {
 
         assert_eq!(
             Color::new(1.0, 1.0, 1.0),
-            m.lighting(light, p, eyev, normalv)
+            m.lighting(light, p, eyev, normalv, false)
         );
     }
 
@@ -110,7 +121,7 @@ mod tests {
         let num: FP = 0.736396;
         assert_eq!(
             Color::new(num, num, num),
-            m.lighting(light, p, eyev, normalv)
+            m.lighting(light, p, eyev, normalv, false)
         );
     }
 
@@ -123,11 +134,26 @@ mod tests {
 
         let eyev = vector(0.0, -num, -num);
         let normalv = vector(0.0, 0.0, -1.0);
-        let light = PointLight::new(point(0.0, 10.0, -10.0), Color::new(1.0, 1.0, 1.0));
+        let light = PointLight::new(point(0.0, 10.0, -10.0), Color::white());
 
         assert_eq!(
             Color::new(1.6364, 1.6364, 1.6364),
-            m.lighting(light, p, eyev, normalv)
+            m.lighting(light, p, eyev, normalv, false)
+        );
+    }
+
+    #[test]
+    fn lighting_with_subject_in_shadow() {
+        let m = Material::new();
+        let p = point(0.0, 0.0, 0.0);
+
+        let eyev = vector(0.0, 0.0, -1.0);
+        let normalv = vector(0.0, 0.0, -1.0);
+        let light = PointLight::new(point(0.0, 0.0, -10.0), Color::white());
+
+        assert_eq!(
+            Color::new(0.1, 0.1, 0.1),
+            m.lighting(light, p, eyev, normalv, true)
         );
     }
 }
