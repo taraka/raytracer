@@ -1,6 +1,6 @@
 use crate::ray::Ray;
-use crate::sphere::Sphere;
 use crate::shape::*;
+use crate::sphere::Sphere;
 use crate::tuple::*;
 use crate::EPSILON;
 use std::cmp::Ordering;
@@ -8,16 +8,16 @@ use std::ops;
 
 use crate::FP;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Intersection {
     pub t: FP,
-    pub obj: Sphere,
+    pub obj: Box<dyn Shape>,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug)]
 pub struct Computations {
     pub t: FP,
-    pub obj: Sphere,
+    pub obj: Box<dyn Shape>,
     pub point: Tuple,
     pub over_point: Tuple,
     pub eyev: Tuple,
@@ -26,7 +26,7 @@ pub struct Computations {
 }
 
 impl Intersection {
-    pub fn new(t: FP, obj: Sphere) -> Self {
+    pub fn new(t: FP, obj: Box<dyn Shape>) -> Self {
         Self { t, obj }
     }
 
@@ -45,7 +45,7 @@ impl Intersection {
 
         Computations {
             t: self.t,
-            obj: self.obj,
+            obj: self.obj.clone(),
             point,
             over_point,
             eyev,
@@ -64,6 +64,12 @@ impl PartialOrd for Intersection {
 impl Ord for Intersection {
     fn cmp(&self, other: &Self) -> Ordering {
         self.t.partial_cmp(&other.t).unwrap()
+    }
+}
+
+impl PartialEq for Intersection {
+    fn eq(&self, other: &Self) -> bool {
+        self.t == other.t
     }
 }
 
@@ -90,7 +96,7 @@ impl Intersections {
             .filter(|i| i.t >= 0.0)
             .collect::<Vec<&Intersection>>();
         candidates.sort_by(|a, b| a.t.partial_cmp(&b.t).unwrap());
-        candidates.get(0).map(|x| x.to_owned().to_owned())
+        candidates.get(0).map(|x| x.to_owned().clone())
     }
 }
 
@@ -110,9 +116,9 @@ mod tests {
     #[test]
     fn interections() {
         let s = Sphere::new();
-        let a = Intersection::new(1.0, s);
+        let a = Intersection::new(1.0, s.clone());
         let b = Intersection::new(2.0, s);
-        let i = Intersections::new(vec![a, b]);
+        let i = Intersections::new(vec![a.clone(), b]);
 
         assert_eq!(2, i.len());
         assert_eq!(a, i[0]);
@@ -121,9 +127,9 @@ mod tests {
     #[test]
     fn hit_all_pos() {
         let s = Sphere::new();
-        let a = Intersection::new(1.0, s);
+        let a = Intersection::new(1.0, s.clone());
         let b = Intersection::new(2.0, s);
-        let i = Intersections::new(vec![a, b]);
+        let i = Intersections::new(vec![a.clone(), b]);
 
         assert_eq!(a, i.hit().unwrap());
     }
@@ -131,9 +137,9 @@ mod tests {
     #[test]
     fn hit_neg_pos() {
         let s = Sphere::new();
-        let a = Intersection::new(-1.0, s);
+        let a = Intersection::new(-1.0, s.clone());
         let b = Intersection::new(2.0, s);
-        let i = Intersections::new(vec![a, b]);
+        let i = Intersections::new(vec![a, b.clone()]);
 
         assert_eq!(b, i.hit().unwrap());
     }
@@ -141,7 +147,7 @@ mod tests {
     #[test]
     fn hit_neg() {
         let s = Sphere::new();
-        let a = Intersection::new(-1.0, s);
+        let a = Intersection::new(-1.0, s.clone());
         let b = Intersection::new(-2.0, s);
         let i = Intersections::new(vec![a, b]);
 
@@ -151,11 +157,11 @@ mod tests {
     #[test]
     fn hit_order() {
         let s = Sphere::new();
-        let a = Intersection::new(5.0, s);
-        let b = Intersection::new(7.0, s);
-        let c = Intersection::new(-3.0, s);
+        let a = Intersection::new(5.0, s.clone());
+        let b = Intersection::new(7.0, s.clone());
+        let c = Intersection::new(-3.0, s.clone());
         let d = Intersection::new(2.0, s);
-        let i = Intersections::new(vec![a, b, c, d]);
+        let i = Intersections::new(vec![a, b, c, d.clone()]);
 
         assert_eq!(d, i.hit().unwrap());
     }
@@ -167,7 +173,7 @@ mod tests {
         let i = Intersection::new(4.0, shape);
         let comps = i.prepare_computations(&r);
         assert_eq!(comps.t, i.t);
-        assert_eq!(comps.obj, i.obj);
+        assert_eq!(comps.obj.get_id(), i.obj.get_id());
         assert_eq!(comps.point, point(0.0, 0.0, -1.0));
         assert_eq!(comps.eyev, vector(0.0, 0.0, -1.0));
         assert_eq!(comps.normalv, vector(0.0, 0.0, -1.0));

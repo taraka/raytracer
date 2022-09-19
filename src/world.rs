@@ -2,13 +2,13 @@ use crate::intersection::*;
 use crate::light::PointLight;
 use crate::matrix::*;
 use crate::ray::Ray;
+use crate::shape::Shape;
 use crate::sphere::Sphere;
 use crate::tuple::*;
 use crate::Color;
-use crate::shape::Shape;
 
 pub struct World {
-    pub objects: Vec<Sphere>,
+    pub objects: Vec<Box<dyn Shape>>,
     pub light: Option<PointLight>,
 }
 
@@ -39,6 +39,10 @@ impl World {
         }
     }
 
+    pub fn add(&mut self, s: Box<dyn Shape>) {
+        self.objects.push(s)
+    }
+
     pub fn intersect(&self, r: &Ray) -> Intersections {
         let mut v: Vec<Intersection> = self
             .objects
@@ -50,7 +54,7 @@ impl World {
     }
 
     pub fn shade_hit(&self, comps: &Computations) -> Color {
-        comps.obj.material.lighting(
+        comps.obj.get_material().lighting(
             self.light.unwrap(),
             comps.point,
             comps.eyev,
@@ -129,7 +133,7 @@ mod tests {
     fn shading_an_intersection() {
         let w = World::default();
         let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 0.0, 1.0));
-        let s = w.objects[0];
+        let s = w.objects[0].clone();
         let i = Intersection::new(4.0, s);
         let comps = i.prepare_computations(&r);
         let c = w.shade_hit(&comps);
@@ -142,7 +146,7 @@ mod tests {
         let mut w = World::default();
         w.light = Some(PointLight::new(point(0.0, 0.25, 0.0), Color::white()));
         let r = Ray::new(point(0.0, 0.0, 0.0), vector(0.0, 0.0, 1.0));
-        let s = w.objects[1];
+        let s = w.objects[1].clone();
         let i = Intersection::new(0.5, s);
         let comps = i.prepare_computations(&r);
         let c = w.shade_hit(&comps);
@@ -174,11 +178,11 @@ mod tests {
         w.light = Some(PointLight::new(point(0.0, 0.0, -10.0), Color::white()));
 
         let s1 = Sphere::new();
-        w.objects.push(s1);
+        w.add(s1);
 
         let mut s2 = Sphere::new();
         s2.transform = translation(0.0, 0.0, 10.0);
-        w.objects.push(s2);
+        w.add(s2.clone());
 
         let r = Ray::new(point(0.0, 0.0, 5.0), vector(0.0, 0.0, 1.0));
         let i = Intersection::new(4.0, s2);
@@ -191,13 +195,13 @@ mod tests {
     #[test]
     fn shading_behind() {
         let mut w = World::default();
-        w.objects[0].material.ambient = 1.0;
-        w.objects[1].material.ambient = 1.0;
+        w.objects[0].get_mut_material().ambient = 1.0;
+        w.objects[1].get_mut_material().ambient = 1.0;
 
         let r = Ray::new(point(0.0, 0.0, 0.75), vector(0.0, 0.0, -1.0));
         let c = w.color_at(&r);
 
-        assert_eq!(c, w.objects[1].material.color);
+        assert_eq!(c, w.objects[1].get_material().color);
     }
 
     #[test]

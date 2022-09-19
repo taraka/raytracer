@@ -15,11 +15,9 @@ type FP = f64;
 const EPSILON: FP = 0.00001;
 
 use crate::camera::Camera;
-use crate::canvas::Canvas;
 use crate::color::Color;
 use crate::light::PointLight;
 use crate::matrix::*;
-use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::tuple::*;
 use crate::world::World;
@@ -36,7 +34,7 @@ fn main() -> std::io::Result<()> {
     floor.material.color = Color::new(1.0, 0.9, 0.9);
     floor.material.specular = 0.0;
 
-    world.objects.push(floor);
+    world.objects.push(floor.clone());
 
     let mut left_wall = Sphere::new();
     left_wall.transform = translation(0.0, 0.0, 5.0)

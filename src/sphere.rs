@@ -2,12 +2,12 @@ use crate::intersection::*;
 use crate::material::Material;
 use crate::matrix::*;
 use crate::ray::Ray;
-use crate::tuple::*;
 use crate::shape::*;
+use crate::tuple::*;
 
 use uuid::Uuid;
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Sphere {
     id: Uuid,
     pub transform: Matrix4,
@@ -15,16 +15,20 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new() -> Self {
-        Self {
+    pub fn new() -> Box<Self> {
+        Box::new(Self {
             id: Uuid::new_v4(),
             transform: Matrix4::identity(),
             material: Material::new(),
-        }
+        })
     }
 }
 
 impl Shape for Sphere {
+    fn get_id(&self) -> Uuid {
+        self.id
+    }
+
     fn set_transform(&mut self, m: Matrix4) {
         self.transform = m;
     }
@@ -33,12 +37,20 @@ impl Shape for Sphere {
         return &self.transform;
     }
 
+    fn get_mut_transform(&mut self) -> &mut Matrix4 {
+        return &mut self.transform;
+    }
+
     fn set_material(&mut self, m: Material) {
         self.material = m;
     }
 
     fn get_material(&self) -> &Material {
         return &self.material;
+    }
+
+    fn get_mut_material(&mut self) -> &mut Material {
+        return &mut self.material;
     }
 
     fn local_intersect(&self, ray: &Ray) -> Intersections {
@@ -56,8 +68,8 @@ impl Shape for Sphere {
         let t1 = (-b - discriminant.sqrt()) / (2.0 * a);
         let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
         Intersections::new(vec![
-            Intersection::new(t1, *self),
-            Intersection::new(t2, *self),
+            Intersection::new(t1, Box::new(self.clone())),
+            Intersection::new(t2, Box::new(self.clone())),
         ])
     }
 
