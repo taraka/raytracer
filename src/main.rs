@@ -20,6 +20,7 @@ use crate::color::Color;
 use crate::light::PointLight;
 use crate::matrix::*;
 use crate::sphere::Sphere;
+use crate::plane::Plane;
 use crate::tuple::*;
 use crate::world::World;
 use std::f64::consts::PI;
@@ -30,30 +31,30 @@ use std::io::Write;
 fn main() -> std::io::Result<()> {
     let mut world = World::new();
 
-    let mut floor = Sphere::new();
-    floor.transform = scaling(10.0, 0.01, 10.0);
+    let mut floor = Plane::new();
+    // floor.transform = scaling(10.0, 0.01, 10.0);
     floor.material.color = Color::new(1.0, 0.9, 0.9);
     floor.material.specular = 0.0;
 
     world.objects.push(floor.clone());
 
-    let mut left_wall = Sphere::new();
-    left_wall.transform = translation(0.0, 0.0, 5.0)
-        * rotation_y(-PI / 4.0)
-        * rotation_x(PI / 2.0)
-        * scaling(10.0, 0.01, 10.0);
-    left_wall.material = floor.material;
+    // let mut left_wall = Sphere::new();
+    // left_wall.transform = translation(0.0, 0.0, 5.0)
+    //     * rotation_y(-PI / 4.0)
+    //     * rotation_x(PI / 2.0)
+    //     * scaling(10.0, 0.01, 10.0);
+    // left_wall.material = floor.material;
 
-    world.objects.push(left_wall);
+    // world.objects.push(left_wall);
 
-    let mut right_wall = Sphere::new();
-    right_wall.transform = translation(0.0, 0.0, 5.0)
-        * rotation_y(PI / 4.0)
-        * rotation_x(PI / 2.0)
-        * scaling(10.0, 0.01, 10.0);
-    right_wall.material = floor.material;
+    // let mut right_wall = Sphere::new();
+    // right_wall.transform = translation(0.0, 0.0, 5.0)
+    //     * rotation_y(PI / 4.0)
+    //     * rotation_x(PI / 2.0)
+    //     * scaling(10.0, 0.01, 10.0);
+    // right_wall.material = floor.material;
 
-    world.objects.push(right_wall);
+    // world.objects.push(right_wall);
 
     let mut middle = Sphere::new();
     middle.transform = translation(-0.5, 1.0, 0.5);
