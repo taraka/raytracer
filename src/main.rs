@@ -30,17 +30,25 @@ use std::io::Write;
 fn main() -> std::io::Result<()> {
     let mut world = World::new();
 
+    let mut p1 = Pattern::stripe(Color::white(), Color::new(0.0, 0.3, 0.6));
+    p1.transform = rotation_y(PI / 2.0);
+
+    let floor_pattern = Pattern::blended(
+        Pattern::stripe(Color::white(), Color::new(0.0, 0.2, 0.6)),
+        p1,
+    );
+
     let mut floor = Shape::plane();
     // floor.transform = scaling(10.0, 0.01, 10.0);
-    floor.material.pattern = Pattern::checkers(Color::new(0.2, 0.1, 0.1), Color::new(1.0, 0.9, 0.9));
+    floor.material.pattern = floor_pattern;
     floor.material.specular = 0.0;
 
     world.objects.push(floor.clone());
 
     let mut middle = Shape::sphere();
     middle.transform = translation(-0.5, 1.0, 0.5);
-    middle.material.pattern = Pattern::radialgradient(Color::new(0.1, 1.0, 0.5), Color::new(1.0, 0.0, 0.5));
-    middle.material.pattern.transform = scaling(0.2, 0.2, 0.2);
+    middle.material.pattern = Pattern::radialgradient(Color::white(), Color::new(0.5, 0.0, 0.5));
+    middle.material.pattern.transform = scaling(0.1, 0.1, 0.1) * rotation_x(PI / 2.0);
     middle.material.diffuse = 0.6;
     middle.material.specular = 0.7;
 
@@ -57,7 +65,8 @@ fn main() -> std::io::Result<()> {
 
     let mut left = Shape::sphere();
     left.transform = translation(-1.5, 0.33, -0.75) * scaling(0.33, 0.33, 0.33);
-    left.material.pattern = Pattern::solid(Color::new(1.0, 0.8, 0.1));
+    left.material.pattern = Pattern::ring(Color::new(1.0, 0.8, 0.1), Color::white());
+    left.material.pattern.transform = scaling(0.1, 0.1, 0.1) * rotation_x(PI / 2.0);
     left.material.diffuse = 0.7;
     left.material.specular = 0.3;
 

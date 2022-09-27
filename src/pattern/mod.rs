@@ -1,3 +1,4 @@
+mod blended;
 mod checkers;
 mod gradient;
 mod radialgradient;
@@ -5,6 +6,7 @@ mod ring;
 mod stripe;
 
 use crate::matrix::*;
+use crate::pattern::blended::Blended;
 use crate::pattern::checkers::Checkers;
 use crate::pattern::gradient::Gradient;
 use crate::pattern::radialgradient::RadialGradient;
@@ -14,7 +16,7 @@ use crate::shape::*;
 use crate::Color;
 use crate::Tuple;
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Pattern {
     pub pattern: Patterns,
     pub transform: Matrix4,
@@ -26,6 +28,10 @@ impl Pattern {
             pattern,
             transform: Matrix4::identity(),
         }
+    }
+
+    pub fn blended(a: Pattern, b: Pattern) -> Self {
+        Self::new(Patterns::Blended(Blended::new(a, b)))
     }
 
     pub fn checkers(a: Color, b: Color) -> Self {
@@ -52,26 +58,28 @@ impl Pattern {
         Self::new(Patterns::Solid(c))
     }
 
-    pub fn color_at(&self, t: &Tuple) -> Color {
-        match self.pattern {
-            Patterns::Checkers(p) => p.color_at(t),
-            Patterns::Gradient(p) => p.color_at(t),
-            Patterns::RadialGradient(p) => p.color_at(t),
-            Patterns::Ring(p) => p.color_at(t),
+    pub fn color_at(&self, obj_point: &Tuple) -> Color {
+        let t = self.transform.inverse() * *obj_point;
+        match self.pattern.clone() {
+            Patterns::Blended(p) => p.color_at(&t),
+            Patterns::Checkers(p) => p.color_at(&t),
+            Patterns::Gradient(p) => p.color_at(&t),
+            Patterns::RadialGradient(p) => p.color_at(&t),
+            Patterns::Ring(p) => p.color_at(&t),
             Patterns::Solid(c) => c,
-            Patterns::Stripe(p) => p.color_at(t),
+            Patterns::Stripe(p) => p.color_at(&t),
         }
     }
 
     pub fn color_at_object(&self, obj: &Shape, p: &Tuple) -> Color {
         let obj_point = obj.transform.inverse() * *p;
-        let pattern_point = self.transform.inverse() * obj_point;
-        self.color_at(&pattern_point)
+        self.color_at(&obj_point)
     }
 }
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Patterns {
+    Blended(Blended),
     Checkers(Checkers),
     Gradient(Gradient),
     RadialGradient(RadialGradient),

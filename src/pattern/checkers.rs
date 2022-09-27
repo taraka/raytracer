@@ -20,8 +20,6 @@ impl Checkers {
             self.b
         }
     }
-
-    
 }
 
 

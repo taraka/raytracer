@@ -4,7 +4,7 @@ use crate::pattern::Pattern;
 use crate::FP;
 use crate::*;
 
-#[derive(Debug, PartialEq, Copy, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Material {
     pub pattern: Pattern,
     pub ambient: FP,

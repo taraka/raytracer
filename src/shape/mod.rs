@@ -12,7 +12,7 @@ use crate::EPSILON;
 
 use uuid::Uuid;
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Shape {
     id: Uuid,
     pub shape: Shapes,

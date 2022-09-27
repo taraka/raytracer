@@ -138,6 +138,10 @@ impl ops::Neg for Tuple {
     }
 }
 
+pub fn origin() -> Tuple {
+    Tuple::point(0.0, 0.0, 0.0)
+}
+
 pub fn point(x: FP, y: FP, z: FP) -> Tuple {
     Tuple::point(x, y, z)
 }

@@ -27,6 +27,14 @@ impl Color {
         Self::new(1.0, 0.0, 0.0)
     }
 
+    pub fn green() -> Self {
+        Self::new(0.0, 1.0, 0.0)
+    }
+
+    pub fn blue() -> Self {
+        Self::new(0.0, 0.0, 1.0)
+    }
+
     pub fn is_black(&self) -> bool {
         self.red == 0.0 && self.green == 0.0 && self.blue == 0.0
     }

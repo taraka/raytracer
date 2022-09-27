@@ -28,8 +28,8 @@ impl Sphere {
         let t1 = (-b - discriminant.sqrt()) / (2.0 * a);
         let t2 = (-b + discriminant.sqrt()) / (2.0 * a);
         Intersections::new(vec![
-            Intersection::new(t1, shape),
-            Intersection::new(t2, shape),
+            Intersection::new(t1, shape.clone()),
+            Intersection::new(t2, shape.clone()),
         ])
     }
 
