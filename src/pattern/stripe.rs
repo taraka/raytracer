@@ -1,20 +1,21 @@
 use crate::color::Color;
 use crate::tuple::*;
 
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct StripePattern {
     pub a: Color,
     pub b: Color,
 }
 
 impl StripePattern {
-    fn new(a: Color, b: Color) -> Self {
+    pub fn new(a: Color, b: Color) -> Self {
         Self {
             a,
             b,
         }
     }
 
-    fn color_at(&self, p: &Tuple) -> Color {
+    pub fn color_at(&self, p: &Tuple) -> Color {
         if p.x.floor().abs() as isize % 2 == 0 {
             self.a
         } else {
@@ -60,4 +61,9 @@ mod tests {
         assert_eq!(p.color_at(&point(-1.0, 0.0, 0.0)), Color::black()); 
         assert_eq!(p.color_at(&point(-1.1, 0.0, 0.0)), Color::white()); 
     }
+
+    // #[test]
+    // fn stripe_pattern__with_object_transform() {
+    //     let p = StripePattern::new(Color::white(), Color::black());
+    // }
 }

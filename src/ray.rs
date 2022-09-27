@@ -29,7 +29,7 @@ impl Ray {
 #[cfg(test)]
 mod tests {
     use crate::ray::*;
-    use crate::Sphere;
+    use crate::shape::Shape;
 
     #[test]
     fn create_ray() {
@@ -58,7 +58,7 @@ mod tests {
         let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
-        let s = Sphere::new();
+        let s = Shape::sphere();
 
         let xs = s.intersect(&r);
 
@@ -73,7 +73,7 @@ mod tests {
         let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
-        let s = Sphere::new();
+        let s = Shape::sphere();
 
         let xs = s.intersect(&r);
 
@@ -88,7 +88,7 @@ mod tests {
         let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
-        let s = Sphere::new();
+        let s = Shape::sphere();
 
         let xs = s.intersect(&r);
 
@@ -101,7 +101,7 @@ mod tests {
         let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
-        let s = Sphere::new();
+        let s = Shape::sphere();
 
         let xs = s.intersect(&r);
 
@@ -116,7 +116,7 @@ mod tests {
         let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
 
-        let s = Sphere::new();
+        let s = Shape::sphere();
 
         let xs = s.intersect(&r);
 
@@ -156,8 +156,8 @@ mod tests {
         let o = point(0.0, 0.0, -5.0);
         let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
-        let mut s = Sphere::new();
-        s.set_transform(scaling(2.0, 2.0, 2.0));
+        let mut s = Shape::sphere();
+        s.transform = scaling(2.0, 2.0, 2.0);
 
         let xs = s.intersect(&r);
 
@@ -171,8 +171,8 @@ mod tests {
         let o = point(0.0, 0.0, -5.0);
         let d = vector(0.0, 0.0, 1.0);
         let r = Ray::new(o, d);
-        let mut s = Sphere::new();
-        s.set_transform(translation(5.0, 0.0, 0.0));
+        let mut s = Shape::sphere();
+        s.transform = translation(5.0, 0.0, 0.0);
 
         let xs = s.intersect(&r);
 

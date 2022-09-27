@@ -1,12 +1,9 @@
 use crate::canvas::Canvas;
-use crate::color::Color;
 use crate::matrix::*;
 use crate::ray::Ray;
 use crate::tuple::*;
 use crate::world::World;
-use crate::EPSILON;
 use crate::FP;
-use std::f64::consts::PI;
 
 pub struct Camera {
     pub hsize: usize,
@@ -71,7 +68,10 @@ impl Camera {
 
 #[cfg(test)]
 mod tests {
+    use crate::color::*;
     use crate::camera::*;
+    use crate::EPSILON;
+    use crate::PI;
 
     #[test]
     fn create_camera() {

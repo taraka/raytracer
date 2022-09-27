@@ -1,11 +1,13 @@
 use crate::color::Color;
 use crate::light::PointLight;
+use crate::pattern::Pattern;
 use crate::FP;
 use crate::*;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Material {
     pub color: Color,
+    pub pattern: Option<Pattern>,
     pub ambient: FP,
     pub diffuse: FP,
     pub specular: FP,
@@ -16,6 +18,7 @@ impl Material {
     pub fn new() -> Self {
         Self {
             color: Color::white(),
+            pattern: None,
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,
@@ -31,14 +34,20 @@ impl Material {
         normalv: Tuple,
         in_shadow: bool,
     ) -> Color {
-        let effective_color = self.color * light.intensity;
+        let color = if let Some(p) = self.pattern {
+            p.color_at(&point)
+        } else {
+            self.color
+        };
+
+        let effective_color = color * light.intensity;
         let lightv = (light.position - point).normalize();
         let ambient = effective_color * self.ambient;
-
+        
         if in_shadow {
             return ambient;
         }
-
+        
         let light_dot_normal = lightv.dot(&normalv);
         let diffuse: Color;
         let specular: Color;
@@ -154,6 +163,28 @@ mod tests {
         assert_eq!(
             Color::new(0.1, 0.1, 0.1),
             m.lighting(light, p, eyev, normalv, true)
+        );
+    }
+
+    #[test]
+    fn lighting_with_pattern() {
+        let mut m = Material::new();
+        m.pattern = Some(Pattern::stripe(Color::white(), Color::black()));
+        m.ambient = 1.0;
+        m.diffuse = 0.0;
+        m.specular = 0.0;
+
+        let eyev = vector(0.0, 0.0, -1.0);
+        let normalv = vector(0.0, 0.0, -1.0);
+        let light = PointLight::new(point(0.0, 0.0, -10.0), Color::white());
+
+        assert_eq!(
+            Color::white(),
+            m.lighting(light, point(0.9, 0.0, 0.0), eyev, normalv, false)
+        );
+        assert_eq!(
+            Color::black(),
+            m.lighting(light, point(1.1, 0.0, 0.0), eyev, normalv, false)
         );
     }
 }

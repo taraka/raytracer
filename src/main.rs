@@ -6,10 +6,8 @@ mod light;
 mod material;
 mod matrix;
 mod pattern;
-mod plane;
 mod ray;
 mod shape;
-mod sphere;
 mod tuple;
 mod world;
 
@@ -20,8 +18,7 @@ use crate::camera::Camera;
 use crate::color::Color;
 use crate::light::PointLight;
 use crate::matrix::*;
-use crate::sphere::Sphere;
-use crate::plane::Plane;
+use crate::shape::Shape;
 use crate::tuple::*;
 use crate::world::World;
 use std::f64::consts::PI;
@@ -32,7 +29,7 @@ use std::io::Write;
 fn main() -> std::io::Result<()> {
     let mut world = World::new();
 
-    let mut floor = Plane::new();
+    let mut floor = Shape::plane();
     // floor.transform = scaling(10.0, 0.01, 10.0);
     floor.material.color = Color::new(1.0, 0.9, 0.9);
     floor.material.specular = 0.0;
@@ -57,7 +54,7 @@ fn main() -> std::io::Result<()> {
 
     // world.objects.push(right_wall);
 
-    let mut middle = Sphere::new();
+    let mut middle = Shape::sphere();
     middle.transform = translation(-0.5, 1.0, 0.5);
     middle.material.color = Color::new(0.1, 1.0, 0.5);
     middle.material.diffuse = 0.6;
@@ -65,7 +62,7 @@ fn main() -> std::io::Result<()> {
 
     world.objects.push(middle);
 
-    let mut right = Sphere::new();
+    let mut right = Shape::sphere();
     right.transform = translation(1.5, 0.5, -0.5) * scaling(0.5, 0.5, 0.5);
     right.material.color = Color::new(0.5, 1.0, 0.1);
     right.material.diffuse = 0.7;
@@ -73,7 +70,7 @@ fn main() -> std::io::Result<()> {
 
     world.objects.push(right);
 
-    let mut left = Sphere::new();
+    let mut left = Shape::sphere();
     left.transform = translation(-1.5, 0.33, -0.75) * scaling(0.33, 0.33, 0.33);
     left.material.color = Color::new(1.0, 0.8, 0.1);
     left.material.diffuse = 0.7;

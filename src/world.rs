@@ -3,12 +3,11 @@ use crate::light::PointLight;
 use crate::matrix::*;
 use crate::ray::Ray;
 use crate::shape::Shape;
-use crate::sphere::Sphere;
 use crate::tuple::*;
 use crate::Color;
 
 pub struct World {
-    pub objects: Vec<Box<dyn Shape>>,
+    pub objects: Vec<Shape>,
     pub light: Option<PointLight>,
 }
 
@@ -21,14 +20,14 @@ impl World {
     }
 
     pub fn default() -> Self {
-        let mut s1 = Sphere::new();
-        let mut s2 = Sphere::new();
+        let mut s1 = Shape::sphere();
+        let mut s2 = Shape::sphere();
 
         s1.material.color = Color::new(0.8, 1.0, 0.6);
         s1.material.diffuse = 0.7;
         s1.material.specular = 0.2;
 
-        s2.set_transform(scaling(0.5, 0.5, 0.5));
+        s2.transform = scaling(0.5, 0.5, 0.5);
 
         Self {
             objects: vec![s1, s2],
@@ -39,7 +38,7 @@ impl World {
         }
     }
 
-    pub fn add(&mut self, s: Box<dyn Shape>) {
+    pub fn add(&mut self, s: Shape) {
         self.objects.push(s)
     }
 
@@ -54,7 +53,7 @@ impl World {
     }
 
     pub fn shade_hit(&self, comps: &Computations) -> Color {
-        comps.obj.get_material().lighting(
+        comps.obj.material.lighting(
             self.light.unwrap(),
             comps.point,
             comps.eyev,
@@ -177,10 +176,10 @@ mod tests {
         let mut w = World::new();
         w.light = Some(PointLight::new(point(0.0, 0.0, -10.0), Color::white()));
 
-        let s1 = Sphere::new();
+        let s1 = Shape::sphere();
         w.add(s1);
 
-        let mut s2 = Sphere::new();
+        let mut s2 = Shape::sphere();
         s2.transform = translation(0.0, 0.0, 10.0);
         w.add(s2.clone());
 
@@ -195,13 +194,13 @@ mod tests {
     #[test]
     fn shading_behind() {
         let mut w = World::default();
-        w.objects[0].get_mut_material().ambient = 1.0;
-        w.objects[1].get_mut_material().ambient = 1.0;
+        w.objects[0].material.ambient = 1.0;
+        w.objects[1].material.ambient = 1.0;
 
         let r = Ray::new(point(0.0, 0.0, 0.75), vector(0.0, 0.0, -1.0));
         let c = w.color_at(&r);
 
-        assert_eq!(c, w.objects[1].get_material().color);
+        assert_eq!(c, w.objects[1].material.color);
     }
 
     #[test]

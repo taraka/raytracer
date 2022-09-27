@@ -1,6 +1,5 @@
 use crate::ray::Ray;
 use crate::shape::*;
-use crate::sphere::Sphere;
 use crate::tuple::*;
 use crate::EPSILON;
 use std::cmp::Ordering;
@@ -11,13 +10,13 @@ use crate::FP;
 #[derive(Debug, Clone)]
 pub struct Intersection {
     pub t: FP,
-    pub obj: Box<dyn Shape>,
+    pub obj: Shape,
 }
 
 #[derive(Debug)]
 pub struct Computations {
     pub t: FP,
-    pub obj: Box<dyn Shape>,
+    pub obj: Shape,
     pub point: Tuple,
     pub over_point: Tuple,
     pub eyev: Tuple,
@@ -26,7 +25,7 @@ pub struct Computations {
 }
 
 impl Intersection {
-    pub fn new(t: FP, obj: Box<dyn Shape>) -> Self {
+    pub fn new(t: FP, obj: Shape) -> Self {
         Self { t, obj }
     }
 
@@ -115,7 +114,7 @@ mod tests {
 
     #[test]
     fn interections() {
-        let s = Sphere::new();
+        let s = Shape::sphere();
         let a = Intersection::new(1.0, s.clone());
         let b = Intersection::new(2.0, s);
         let i = Intersections::new(vec![a.clone(), b]);
@@ -126,7 +125,7 @@ mod tests {
 
     #[test]
     fn hit_all_pos() {
-        let s = Sphere::new();
+        let s = Shape::sphere();
         let a = Intersection::new(1.0, s.clone());
         let b = Intersection::new(2.0, s);
         let i = Intersections::new(vec![a.clone(), b]);
@@ -136,7 +135,7 @@ mod tests {
 
     #[test]
     fn hit_neg_pos() {
-        let s = Sphere::new();
+        let s = Shape::sphere();
         let a = Intersection::new(-1.0, s.clone());
         let b = Intersection::new(2.0, s);
         let i = Intersections::new(vec![a, b.clone()]);
@@ -146,7 +145,7 @@ mod tests {
 
     #[test]
     fn hit_neg() {
-        let s = Sphere::new();
+        let s = Shape::sphere();
         let a = Intersection::new(-1.0, s.clone());
         let b = Intersection::new(-2.0, s);
         let i = Intersections::new(vec![a, b]);
@@ -156,7 +155,7 @@ mod tests {
 
     #[test]
     fn hit_order() {
-        let s = Sphere::new();
+        let s = Shape::sphere();
         let a = Intersection::new(5.0, s.clone());
         let b = Intersection::new(7.0, s.clone());
         let c = Intersection::new(-3.0, s.clone());
@@ -169,7 +168,7 @@ mod tests {
     #[test]
     fn precomputing_state_of_intersection() {
         let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 0.0, 1.0));
-        let shape = Sphere::new();
+        let shape = Shape::sphere();
         let i = Intersection::new(4.0, shape);
         let comps = i.prepare_computations(&r);
         assert_eq!(comps.t, i.t);
@@ -182,7 +181,7 @@ mod tests {
     #[test]
     fn precomputing_state_of_intersection_outside() {
         let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 0.0, 1.0));
-        let shape = Sphere::new();
+        let shape = Shape::sphere();
         let i = Intersection::new(4.0, shape);
         let comps = i.prepare_computations(&r);
         assert_eq!(comps.inside, false);
@@ -191,7 +190,7 @@ mod tests {
     #[test]
     fn precomputing_state_of_intersection_inside() {
         let r = Ray::new(point(0.0, 0.0, 0.0), vector(0.0, 0.0, 1.0));
-        let shape = Sphere::new();
+        let shape = Shape::sphere();
         let i = Intersection::new(1.0, shape);
         let comps = i.prepare_computations(&r);
         assert_eq!(comps.inside, true);
@@ -203,7 +202,7 @@ mod tests {
     #[test]
     fn hit_should_offset_the_point() {
         let r = Ray::new(point(0.0, 0.0, -5.0), vector(0.0, 0.0, 1.0));
-        let mut shape = Sphere::new();
+        let mut shape = Shape::sphere();
         shape.transform = translation(0.0, 0.0, 1.0);
         let i = Intersection::new(5.0, shape);
         let comps = i.prepare_computations(&r);
