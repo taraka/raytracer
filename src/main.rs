@@ -48,7 +48,8 @@ fn main() -> std::io::Result<()> {
 
     let mut right = Shape::sphere();
     right.transform = translation(1.5, 0.5, -0.5) * scaling(0.5, 0.5, 0.5);
-    right.material.pattern = Pattern::solid(Color::new(0.5, 1.0, 0.1));
+    right.material.pattern = Pattern::checkers(Color::new(0.1, 1.0, 0.5), Color::new(1.0, 0.0, 0.5));
+    right.material.pattern.transform = scaling(0.2, 0.2, 0.2);
     right.material.diffuse = 0.7;
     right.material.specular = 0.3;
 
@@ -69,7 +70,7 @@ fn main() -> std::io::Result<()> {
 
     let mut camera = Camera::new(1000, 600, PI / 3.0);
     camera.transform = Matrix4::view_transform(
-        point(0.0, 1.5, -5.0),
+        point(0.0, 1.7, -5.0),
         point(0.0, 1.0, 0.0),
         vector(0.0, 1.0, 0.0),
     );

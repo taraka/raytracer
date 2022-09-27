@@ -37,7 +37,7 @@ impl Pattern {
     }
 
     pub fn radialgradient(a: Color, b: Color) -> Self {
-        Self::new(Patterns::Gradient(Gradient::new(a, b)))
+        Self::new(Patterns::RadialGradient(RadialGradient::new(a, b)))
     }
 
     pub fn ring(a: Color, b: Color) -> Self {

@@ -40,7 +40,7 @@ impl Intersection {
             normalv = -normalv;
         }
 
-        let over_point = point + (normalv * EPSILON);
+        let over_point = point + (normalv * (EPSILON / 10000000.0) );
 
         Computations {
             t: self.t,
