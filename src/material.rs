@@ -6,8 +6,7 @@ use crate::*;
 
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Material {
-    pub color: Color,
-    pub pattern: Option<Pattern>,
+    pub pattern: Pattern,
     pub ambient: FP,
     pub diffuse: FP,
     pub specular: FP,
@@ -17,8 +16,7 @@ pub struct Material {
 impl Material {
     pub fn new() -> Self {
         Self {
-            color: Color::white(),
-            pattern: None,
+            pattern: Pattern::solid(Color::white()),
             ambient: 0.1,
             diffuse: 0.9,
             specular: 0.9,
@@ -35,13 +33,7 @@ impl Material {
         normalv: Tuple,
         in_shadow: bool,
     ) -> Color {
-        let color = if let Some(p) = self.pattern {
-            p.color_at_object(obj, &point)
-        } else {
-            self.color
-        };
-
-        let effective_color = color * light.intensity;
+        let effective_color = self.pattern.color_at_object(obj, &point) * light.intensity;
         let lightv = (light.position - point).normalize();
         let ambient = effective_color * self.ambient;
 
@@ -81,7 +73,7 @@ mod tests {
     fn default_material() {
         let m = Material::new();
 
-        assert_eq!(m.color, Color::white());
+        assert_eq!(m.pattern, Pattern::solid(Color::white()));
         assert_eq!(m.ambient, 0.1);
         assert_eq!(m.diffuse, 0.9);
         assert_eq!(m.specular, 0.9);
@@ -170,7 +162,7 @@ mod tests {
     #[test]
     fn lighting_with_pattern() {
         let mut m = Material::new();
-        m.pattern = Some(Pattern::stripe(Color::white(), Color::black()));
+        m.pattern = Pattern::stripe(Color::white(), Color::black());
         m.ambient = 1.0;
         m.diffuse = 0.0;
         m.specular = 0.0;

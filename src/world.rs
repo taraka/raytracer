@@ -1,3 +1,4 @@
+use crate::Pattern;
 use crate::intersection::*;
 use crate::light::PointLight;
 use crate::matrix::*;
@@ -23,7 +24,7 @@ impl World {
         let mut s1 = Shape::sphere();
         let mut s2 = Shape::sphere();
 
-        s1.material.color = Color::new(0.8, 1.0, 0.6);
+        s1.material.pattern = Pattern::solid(Color::new(0.8, 1.0, 0.6));
         s1.material.diffuse = 0.7;
         s1.material.specular = 0.2;
 
@@ -201,7 +202,7 @@ mod tests {
         let r = Ray::new(point(0.0, 0.0, 0.75), vector(0.0, 0.0, -1.0));
         let c = w.color_at(&r);
 
-        assert_eq!(c, w.objects[1].material.color);
+        assert_eq!(c, w.objects[1].material.pattern.color_at(&point(0.0, 0.0, 0.0)));
     }
 
     #[test]

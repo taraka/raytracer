@@ -16,6 +16,7 @@ const EPSILON: FP = 0.00001;
 
 use crate::camera::Camera;
 use crate::color::Color;
+use crate::pattern::*;
 use crate::light::PointLight;
 use crate::matrix::*;
 use crate::shape::Shape;
@@ -31,32 +32,15 @@ fn main() -> std::io::Result<()> {
 
     let mut floor = Shape::plane();
     // floor.transform = scaling(10.0, 0.01, 10.0);
-    floor.material.color = Color::new(1.0, 0.9, 0.9);
+    floor.material.pattern = Pattern::checkers(Color::new(0.2, 0.1, 0.1), Color::new(1.0, 0.9, 0.9));
     floor.material.specular = 0.0;
 
     world.objects.push(floor.clone());
 
-    // let mut left_wall = Sphere::new();
-    // left_wall.transform = translation(0.0, 0.0, 5.0)
-    //     * rotation_y(-PI / 4.0)
-    //     * rotation_x(PI / 2.0)
-    //     * scaling(10.0, 0.01, 10.0);
-    // left_wall.material = floor.material;
-
-    // world.objects.push(left_wall);
-
-    // let mut right_wall = Sphere::new();
-    // right_wall.transform = translation(0.0, 0.0, 5.0)
-    //     * rotation_y(PI / 4.0)
-    //     * rotation_x(PI / 2.0)
-    //     * scaling(10.0, 0.01, 10.0);
-    // right_wall.material = floor.material;
-
-    // world.objects.push(right_wall);
-
     let mut middle = Shape::sphere();
     middle.transform = translation(-0.5, 1.0, 0.5);
-    middle.material.color = Color::new(0.1, 1.0, 0.5);
+    middle.material.pattern = Pattern::radialgradient(Color::new(0.1, 1.0, 0.5), Color::new(1.0, 0.0, 0.5));
+    middle.material.pattern.transform = scaling(0.2, 0.2, 0.2);
     middle.material.diffuse = 0.6;
     middle.material.specular = 0.7;
 
@@ -64,7 +48,7 @@ fn main() -> std::io::Result<()> {
 
     let mut right = Shape::sphere();
     right.transform = translation(1.5, 0.5, -0.5) * scaling(0.5, 0.5, 0.5);
-    right.material.color = Color::new(0.5, 1.0, 0.1);
+    right.material.pattern = Pattern::solid(Color::new(0.5, 1.0, 0.1));
     right.material.diffuse = 0.7;
     right.material.specular = 0.3;
 
@@ -72,7 +56,7 @@ fn main() -> std::io::Result<()> {
 
     let mut left = Shape::sphere();
     left.transform = translation(-1.5, 0.33, -0.75) * scaling(0.33, 0.33, 0.33);
-    left.material.color = Color::new(1.0, 0.8, 0.1);
+    left.material.pattern = Pattern::solid(Color::new(1.0, 0.8, 0.1));
     left.material.diffuse = 0.7;
     left.material.specular = 0.3;
 
@@ -83,7 +67,7 @@ fn main() -> std::io::Result<()> {
         Color::new(1.0, 1.0, 1.0),
     ));
 
-    let mut camera = Camera::new(2000, 1000, PI / 3.0);
+    let mut camera = Camera::new(1000, 600, PI / 3.0);
     camera.transform = Matrix4::view_transform(
         point(0.0, 1.5, -5.0),
         point(0.0, 1.0, 0.0),

@@ -13,7 +13,7 @@ impl Checkers {
     }
 
     pub fn color_at(&self, p: &Tuple) -> Color {
-        if (p.x.floor() + p.y.floor() + p.z.floor()) as isize % 2 == 0 {
+        if (p.x.floor() + p.y.floor() + p.z.floor()).round() as isize % 2 == 0 {
             self.a
         } else {
             self.b

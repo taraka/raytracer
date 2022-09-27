@@ -1,14 +1,14 @@
 mod checkers;
 mod gradient;
+mod radialgradient;
 mod ring;
-mod solid;
 mod stripe;
 
 use crate::matrix::*;
 use crate::pattern::checkers::Checkers;
 use crate::pattern::gradient::Gradient;
+use crate::pattern::radialgradient::RadialGradient;
 use crate::pattern::ring::Ring;
-use crate::pattern::solid::Solid;
 use crate::pattern::stripe::Stripe;
 use crate::shape::*;
 use crate::Color;
@@ -36,6 +36,10 @@ impl Pattern {
         Self::new(Patterns::Gradient(Gradient::new(a, b)))
     }
 
+    pub fn radialgradient(a: Color, b: Color) -> Self {
+        Self::new(Patterns::Gradient(Gradient::new(a, b)))
+    }
+
     pub fn ring(a: Color, b: Color) -> Self {
         Self::new(Patterns::Ring(Ring::new(a, b)))
     }
@@ -45,15 +49,16 @@ impl Pattern {
     }
 
     pub fn solid(c: Color) -> Self {
-        Self::new(Patterns::Solid(Solid::new(c)))
+        Self::new(Patterns::Solid(c))
     }
 
     pub fn color_at(&self, t: &Tuple) -> Color {
         match self.pattern {
             Patterns::Checkers(p) => p.color_at(t),
             Patterns::Gradient(p) => p.color_at(t),
+            Patterns::RadialGradient(p) => p.color_at(t),
             Patterns::Ring(p) => p.color_at(t),
-            Patterns::Solid(p) => p.color_at(t),
+            Patterns::Solid(c) => c,
             Patterns::Stripe(p) => p.color_at(t),
         }
     }
@@ -69,7 +74,8 @@ impl Pattern {
 pub enum Patterns {
     Checkers(Checkers),
     Gradient(Gradient),
+    RadialGradient(RadialGradient),
     Ring(Ring),
-    Solid(Solid),
+    Solid(Color),
     Stripe(Stripe),
 }
