@@ -1,13 +1,13 @@
-mod sphere;
 mod plane;
+mod sphere;
 
 use crate::intersection::*;
 use crate::material::*;
 use crate::matrix::*;
 use crate::ray::*;
-use crate::tuple::*;
-use crate::shape::sphere::Sphere;
 use crate::shape::plane::Plane;
+use crate::shape::sphere::Sphere;
+use crate::tuple::*;
 use crate::EPSILON;
 
 use uuid::Uuid;
@@ -82,7 +82,7 @@ pub enum Shapes {
 #[derive(Debug, PartialEq, Clone, Copy)]
 struct TestShape {}
 
-impl TestShape{
+impl TestShape {
     pub fn new() -> Self {
         Self {}
     }

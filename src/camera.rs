@@ -68,8 +68,8 @@ impl Camera {
 
 #[cfg(test)]
 mod tests {
-    use crate::color::*;
     use crate::camera::*;
+    use crate::color::*;
     use crate::EPSILON;
     use crate::PI;
 

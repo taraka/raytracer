@@ -44,11 +44,11 @@ impl Material {
         let effective_color = color * light.intensity;
         let lightv = (light.position - point).normalize();
         let ambient = effective_color * self.ambient;
-        
+
         if in_shadow {
             return ambient;
         }
-        
+
         let light_dot_normal = lightv.dot(&normalv);
         let diffuse: Color;
         let specular: Color;
@@ -131,7 +131,7 @@ mod tests {
         let num: FP = 0.736396;
         assert_eq!(
             Color::new(num, num, num),
-            m.lighting(&Shape::sphere(),light, p, eyev, normalv, false)
+            m.lighting(&Shape::sphere(), light, p, eyev, normalv, false)
         );
     }
 
@@ -148,7 +148,7 @@ mod tests {
 
         assert_eq!(
             Color::new(1.6364, 1.6364, 1.6364),
-            m.lighting(&Shape::sphere(),light, p, eyev, normalv, false)
+            m.lighting(&Shape::sphere(), light, p, eyev, normalv, false)
         );
     }
 
@@ -181,11 +181,25 @@ mod tests {
 
         assert_eq!(
             Color::white(),
-            m.lighting(&Shape::sphere(), light, point(0.9, 0.0, 0.0), eyev, normalv, false)
+            m.lighting(
+                &Shape::sphere(),
+                light,
+                point(0.9, 0.0, 0.0),
+                eyev,
+                normalv,
+                false
+            )
         );
         assert_eq!(
             Color::black(),
-            m.lighting(&Shape::sphere(), light, point(1.1, 0.0, 0.0), eyev, normalv, false)
+            m.lighting(
+                &Shape::sphere(),
+                light,
+                point(1.1, 0.0, 0.0),
+                eyev,
+                normalv,
+                false
+            )
         );
     }
 }

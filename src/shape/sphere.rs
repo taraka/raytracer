@@ -1,7 +1,7 @@
 use crate::intersection::*;
 use crate::ray::Ray;
-use crate::tuple::*;
 use crate::shape::Shape;
+use crate::tuple::*;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Sphere {}
@@ -40,9 +40,9 @@ impl Sphere {
 
 #[cfg(test)]
 mod tests {
-    use crate::shape::sphere::*;
-    use crate::matrix::*;
     use crate::material::Material;
+    use crate::matrix::*;
+    use crate::shape::sphere::*;
     use crate::FP;
     use std::f64::consts::PI;
 

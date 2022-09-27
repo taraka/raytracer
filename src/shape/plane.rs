@@ -1,9 +1,9 @@
-use crate::Shape;
 use crate::intersection::*;
 use crate::material::Material;
 use crate::matrix::*;
 use crate::ray::Ray;
 use crate::tuple::*;
+use crate::Shape;
 use crate::EPSILON;
 
 use uuid::Uuid;
@@ -13,7 +13,7 @@ pub struct Plane {}
 
 impl Plane {
     pub fn new() -> Self {
-        Self { }
+        Self {}
     }
 }
 
