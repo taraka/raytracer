@@ -28,6 +28,7 @@ impl Material {
 
     pub fn lighting(
         &self,
+        obj: &Shape,
         light: PointLight,
         point: Tuple,
         eyev: Tuple,
@@ -35,7 +36,7 @@ impl Material {
         in_shadow: bool,
     ) -> Color {
         let color = if let Some(p) = self.pattern {
-            p.color_at(&point)
+            p.color_at_object(obj, &point)
         } else {
             self.color
         };
@@ -98,7 +99,7 @@ mod tests {
 
         assert_eq!(
             Color::new(1.9, 1.9, 1.9),
-            m.lighting(light, p, eyev, normalv, false)
+            m.lighting(&Shape::sphere(), light, p, eyev, normalv, false)
         );
     }
 
@@ -114,7 +115,7 @@ mod tests {
 
         assert_eq!(
             Color::new(1.0, 1.0, 1.0),
-            m.lighting(light, p, eyev, normalv, false)
+            m.lighting(&Shape::sphere(), light, p, eyev, normalv, false)
         );
     }
 
@@ -130,7 +131,7 @@ mod tests {
         let num: FP = 0.736396;
         assert_eq!(
             Color::new(num, num, num),
-            m.lighting(light, p, eyev, normalv, false)
+            m.lighting(&Shape::sphere(),light, p, eyev, normalv, false)
         );
     }
 
@@ -147,7 +148,7 @@ mod tests {
 
         assert_eq!(
             Color::new(1.6364, 1.6364, 1.6364),
-            m.lighting(light, p, eyev, normalv, false)
+            m.lighting(&Shape::sphere(),light, p, eyev, normalv, false)
         );
     }
 
@@ -162,7 +163,7 @@ mod tests {
 
         assert_eq!(
             Color::new(0.1, 0.1, 0.1),
-            m.lighting(light, p, eyev, normalv, true)
+            m.lighting(&Shape::sphere(), light, p, eyev, normalv, true)
         );
     }
 
@@ -180,11 +181,11 @@ mod tests {
 
         assert_eq!(
             Color::white(),
-            m.lighting(light, point(0.9, 0.0, 0.0), eyev, normalv, false)
+            m.lighting(&Shape::sphere(), light, point(0.9, 0.0, 0.0), eyev, normalv, false)
         );
         assert_eq!(
             Color::black(),
-            m.lighting(light, point(1.1, 0.0, 0.0), eyev, normalv, false)
+            m.lighting(&Shape::sphere(), light, point(1.1, 0.0, 0.0), eyev, normalv, false)
         );
     }
 }
